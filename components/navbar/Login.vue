@@ -69,8 +69,8 @@ const clearSearch = () => {
     <header class="flex items-center justify-around p-4 bg-white dark:bg-gray-800 shadow-sm">
         <!-- Logo & Brand -->
         <div class="flex items-center cursor-pointer" @click="navigateTo('/dashboard')">
-            <UIcon name="i-heroicons-check-circle" class="text-primary text-2xl mr-2" />
-            <h1 class="text-xl font-bold text-gray-800 dark:text-white">TaskManager</h1>
+            <UIcon name="i-mdi:task-auto" class="text-primary text-2xl mr-2" />
+            <h1 class="text-xl font-bold text-gray-800 dark:text-white">Taskify</h1>
         </div>
 
         <!-- Search & User Profile -->
@@ -96,7 +96,7 @@ const clearSearch = () => {
                 <UAvatar :src="user.avatar" :alt="user.name" size="xl" class="cursor-pointer" />
                 
                 <!-- Informasi profil di dalam dropdown -->
-                <template #before>
+                <template #content-top>
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex items-center gap-3 mb-2">
                             <UAvatar :src="user.avatar" :alt="user.name" size="sm" />

@@ -2,11 +2,11 @@
 const { icon, title, description } = defineProps({
     icon: {
         type: String,
-        default: 'i-heroicons-check-circle'
+        default: 'i-mdi:task-auto'
     },
     title: {
         type: String,
-        default: 'Task Manager'
+        default: 'Taskify'
     },
     description: {
         type: String,
