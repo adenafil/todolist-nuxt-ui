@@ -1,0 +1,52 @@
+<!-- components/task/TaskListHeader.vue -->
+<script setup lang="ts">
+defineProps({
+    filteredCount: {
+        type: Number,
+        required: true
+    },
+    totalCount: {
+        type: Number,
+        required: true
+    },
+    searchTerm: {
+        type: String,
+        default: ''
+    },
+    itemsPerPage: {
+        type: Number,
+        required: true
+    }
+})
+
+const emit = defineEmits(['update:items-per-page', 'add-task'])
+
+const updateItemsPerPage = (value) => {
+    emit('update:items-per-page', value)
+}
+
+const openAddTaskModal = () => {
+    emit('add-task')
+}
+</script>
+
+<template>
+    <div class="flex justify-between items-center">
+        <h2 class="text-lg font-medium">
+            Your Tasks
+            <span v-if="searchTerm" class="text-sm text-gray-500">
+                (filtered: {{ filteredCount }} of {{ totalCount }})
+            </span>
+        </h2>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500 hidden sm:inline">Per page:</span>
+                <UInput :model-value="itemsPerPage" type="number" :min="1" :max="50" size="sm" class="w-16"
+                    @update:model-value="updateItemsPerPage($event)" />
+            </div>
+            <UButton color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">
+                Add Task
+            </UButton>
+        </div>
+    </div>
+</template>

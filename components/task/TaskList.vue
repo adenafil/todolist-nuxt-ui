@@ -1,40 +1,32 @@
 <script setup lang="ts">
+import type { Task } from '~/types/task';
+import { getTaskStatus, getStatusColor, getStatusLabel } from '~/utils/taskStatus';
+import { getPriorityColor } from '~/utils/taskPriority';
+import { formatDate } from '~/utils/dates';
+
 const props = defineProps({
     tasks: {
-        type: Array,
+        type: Array as PropType<Task[]>,
         required: true
     }
-})
+});
 
-const emit = defineEmits(['edit-task', 'delete-task', 'toggle-complete'])
-
-const getPriorityColor = (priority) => {
-    switch (priority) {
-        case 'high':
-            return 'error'
-        case 'medium':
-            return 'info'
-        case 'low':
-            return 'neutral'
-        default:
-            return 'neutral'
-    }
-}
+const emit = defineEmits(['edit-task', 'delete-task', 'toggle-complete']);
 
 // Menambahkan expanded state untuk menampilkan deskripsi
-const expandedTasks = ref(new Set())
+const expandedTasks = ref(new Set());
 
 const toggleExpandTask = (taskId) => {
     if (expandedTasks.value.has(taskId)) {
-        expandedTasks.value.delete(taskId)
+        expandedTasks.value.delete(taskId);
     } else {
-        expandedTasks.value.add(taskId)
+        expandedTasks.value.add(taskId);
     }
-}
+};
 
 const isTaskExpanded = (taskId) => {
-    return expandedTasks.value.has(taskId)
-}
+    return expandedTasks.value.has(taskId);
+};
 </script>
 
 <template>
@@ -51,14 +43,8 @@ const isTaskExpanded = (taskId) => {
                 <div class="col-span-1 font-medium text-right">Actions</div>
             </div>
 
-            <!-- Empty State -->
-            <div v-if="tasks.length === 0" class="p-8 text-center text-gray-500">
-                <UIcon name="i-heroicons-clipboard" class="mx-auto mb-2 text-3xl" />
-                <p>No tasks yet. Add a new task to get started.</p>
-            </div>
-
             <!-- Table Body -->
-            <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
+            <div v-if="tasks.length !== 0" class="divide-y divide-gray-200 dark:divide-gray-700">
                 <div v-for="task in tasks" :key="task.id"
                     class="hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
                     <!-- Main Task Row -->
@@ -88,13 +74,13 @@ const isTaskExpanded = (taskId) => {
 
                         <!-- Due Date -->
                         <div class="col-span-2">
-                            {{ new Date(task.dueDate).toLocaleDateString() }}
+                            {{ formatDate(task.dueDate) }}
                         </div>
 
                         <!-- Status -->
                         <div class="col-span-2">
-                            <UBadge :color="task.completed ? 'success' : 'error'">
-                                {{ task.completed ? 'Completed' : 'In Progress' }}
+                            <UBadge :color="getStatusColor(getTaskStatus(task))">
+                                {{ getStatusLabel(getTaskStatus(task)) }}
                             </UBadge>
                         </div>
 

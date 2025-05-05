@@ -2,7 +2,11 @@
 import { z } from 'zod'
 
 const emit = defineEmits(['search'])
-const { $bus } = useNuxtApp() // Tambahkan akses ke event bus
+const router = useRouter()
+const route = useRoute()
+
+// Use the shared state
+const { searchTerm, setSearchTerm } = useSearchState()
 
 const state = reactive({
     search: ''
@@ -10,9 +14,15 @@ const state = reactive({
 
 const searchTasks = () => {
     if (state.search.trim()) {
-        // Emit ke parent dan juga langsung ke event bus
+        // Update the shared state
+        setSearchTerm(state.search)
         emit('search', state.search)
-        $bus.emit('search', state.search) // Emit langsung ke event bus
+
+        // Navigate to dashboard if we're not already there
+        if (route.path !== '/dashboard') {
+            router.push('/dashboard')
+        }
+
         console.log('Searching for:', state.search)
     }
 }
@@ -57,12 +67,17 @@ const handleSearchSubmit = () => {
     }
 }
 
-// Tambahkan clear search functionality
+// Update clear search functionality
 const clearSearch = () => {
     state.search = ''
-    emit('search', '') // Reset search results
-    $bus.emit('search', '') // Reset search results via event bus
+    emit('search', '')
+    setSearchTerm('') // Update shared state
 }
+
+// Make sure the search input reflects the current search term
+onMounted(() => {
+    state.search = searchTerm.value || ''
+})
 </script>
 
 <template>
@@ -94,7 +109,7 @@ const clearSearch = () => {
             <!-- User Menu -->
             <UDropdownMenu :items="dropdownItems" :popper="{ placement: 'bottom-end' }">
                 <UAvatar :src="user.avatar" :alt="user.name" size="xl" class="cursor-pointer" />
-                
+
                 <!-- Informasi profil di dalam dropdown -->
                 <template #content-top>
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">

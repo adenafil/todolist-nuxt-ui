@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '@nuxt/ui'
 
 const props = defineProps({
   schema: {
@@ -11,7 +10,7 @@ const props = defineProps({
     required: true
   },
   onSubmit: {
-    type: Function,
+    type: Function as PropType<(event: any) => void | Promise<void>>,
     required: true
   }
 })

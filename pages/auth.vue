@@ -16,7 +16,7 @@ const handleNavigate = (type: any) => {
     <UCard class="w-full max-w-md shadow-xl border-0">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold mb-1">
-          <template v-if="isLogin">Welcome Back</template>
+          <template v-if="isLogin">Welcome Back 👋</template>
           <template v-else-if="isRegister">Create Account</template>
           <template v-else>Forgot Password</template>
         </h1>

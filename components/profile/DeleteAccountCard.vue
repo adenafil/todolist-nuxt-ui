@@ -1,4 +1,3 @@
-<!-- components/profile/DeleteAccountCard.vue -->
 <template>
     <UCard class="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
         <div class="flex items-center justify-between">
