@@ -21,7 +21,7 @@ defineProps({
 
 const emit = defineEmits(['update:items-per-page', 'add-task'])
 
-const updateItemsPerPage = (value) => {
+const updateItemsPerPage = (value: number) => {    
     emit('update:items-per-page', value)
 }
 
@@ -41,8 +41,8 @@ const openAddTaskModal = () => {
         <div class="flex items-center gap-2">
             <div class="flex items-center gap-2">
                 <span class="text-sm text-gray-500 hidden sm:inline">Per page:</span>
-                <UInput :model-value="itemsPerPage" type="number" :min="1" :max="50" size="sm" class="w-16"
-                    @update:model-value="updateItemsPerPage($event)" />
+                <UInput :modelValue="itemsPerPage" type="number" :min="1" :max="50" size="sm" class="w-16"
+                    @update:model-value="updateItemsPerPage(Number($event === '' ? 0 : $event))" />
             </div>
             <UButton color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">
                 Add Task

@@ -108,6 +108,6 @@ const isTaskExpanded = (taskId) => {
     <!-- Mobile scroll helper indicator (hanya tampil di layar kecil) -->
     <div class="sm:hidden text-xs text-center text-gray-500 mt-2 flex items-center justify-center">
         <UIcon name="i-heroicons-arrows-right-left" class="h-3 w-3 mr-1" />
-        <span>Swipe left/right to see more</span>
+        <span>Swipe left/right to see more 🎵</span>
     </div>
 </template>

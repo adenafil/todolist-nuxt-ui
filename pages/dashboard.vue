@@ -45,8 +45,8 @@ const isExpired = (dueDate: string): boolean => {
 }
 
 const getStatusColor = (task: Task): string => {
-  if (task.completed) return 'green'
-  if (isExpired(task.dueDate)) return 'red'
+  if (task.completed) return 'primary'
+  if (isExpired(task.dueDate)) return 'errorr'
   return 'warning' // Menggunakan warning untuk in progress
 }
 
@@ -94,11 +94,11 @@ watch(activeFilter, (newFilter, oldFilter) => {
       </TaskList>
 
       <!-- Empty state message when no tasks -->
-      <TaskEmptyState v-if="filteredAndSortedTasks.length === 0" :search-term="searchTerm.value"
+      <TaskEmptyState v-if="filteredAndSortedTasks.length === 0 || tasks.length === 0 || itemsPerPage === 0" :search-term="searchTerm.value"
         :active-filter="activeFilter" />
 
       <!-- Pagination dengan handler eksplisit -->
-      <div class="py-4 flex justify-center" v-if="filteredAndSortedTasks.length > 0">
+      <div class="py-4 flex justify-center" v-if="filteredAndSortedTasks.length > 0 ">
         <UPagination v-model:page="currentPage" :total="filteredAndSortedTasks.length"
           :page-count="Math.ceil(filteredAndSortedTasks.length / itemsPerPage)" :items-per-page="itemsPerPage" :ui="{
             root: 'flex items-center gap-1',

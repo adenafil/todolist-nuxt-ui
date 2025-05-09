@@ -113,9 +113,9 @@ const dropdownItems = computed(() => {
     })) as DropdownMenuItem[]
 })
 
+
 // Check if current filter is a priority filter
 const isPriorityFilter = computed(() => {
-
     return typeof props.activeFilter === 'string' && props.activeFilter.startsWith('priority-')
 })
 
@@ -173,7 +173,7 @@ const activePriorityOption = computed(() => {
         <div class="sm:hidden text-xs text-center text-gray-500 mt-1 mb-2">
             <span class="flex items-center justify-center">
                 <UIcon name="i-heroicons-arrows-right-left" class="h-3 w-3 mr-1" />
-                Swipe for more filters
+                Swipe left or right for more filters 🎵
             </span>
         </div>
     </div>
