@@ -2,14 +2,7 @@
 import { reactive } from "vue";
 
 export function useUser() {
-  const user = reactive({
-    name: "Gus Husni Mubarok Duduk",
-    email: "husni@example.com",
-    avatar: "https://avatars.githubusercontent.com/u/151940728?v=4",
-    joinDate: "2024-01-01",
-    bio: "Full Stack Developer with passion for clean UI and efficient code.",
-    location: "Surabaya, Indonesia",
-  });
+  const user = useState('sanctum.user.identity').value.data;
 
   // Update user data
   // Define a User interface
@@ -20,12 +13,14 @@ export function useUser() {
     joinDate: string;
     bio: string;
     location: string;
+    updated_at: string;
+    created_at: string;
   }
 
   // Define interface for update data (partial user)
   interface UserUpdateData extends Partial<User> {}
 
-  const updateUser = (data: UserUpdateData): void => {
+  const updateUser = (data: UserUpdateData): void => {    
     Object.assign(user, data);
   };
 

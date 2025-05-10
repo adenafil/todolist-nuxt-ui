@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toast } from '#build/ui'
 import { z } from 'zod'
 
 const emit = defineEmits(['search'])
@@ -11,6 +12,7 @@ const { searchTerm, setSearchTerm } = useSearchState()
 const state = reactive({
     search: ''
 })
+
 
 const searchTasks = () => {
     if (state.search.trim()) {
@@ -27,17 +29,27 @@ const searchTasks = () => {
     }
 }
 
-// Gunakan user store atau composable untuk data pengguna
-const user = {
-    name: 'Gus Husni Mubarok Duduk',
-    email: 'husni@example.com', // Tambahkan email
-    avatar: 'https://avatars.githubusercontent.com/u/151940728?v=4'
-}
+const user = useState('sanctum.user.identity').value.data;
+
+
+const {logout} = useSanctumAuth();
+
 
 // Fungsi handler untuk logout
-const handleLogout = () => {
+const handleLogout = async () => {
     console.log('Logging out...')
     // Implementasi logout sebenarnya akan ditambahkan di sini
+
+    await logout();
+
+    // if (status.value === 200) {
+    //     // Redirect to login page or perform any other action
+    //     router.push('/auth')
+    // } else {
+    //     // Handle error
+    //     // toast.error('Logout failed. Please try again.')
+    //     console.error('Logout error:', error.value)
+    // }
 }
 
 // Definisikan dropdown items dengan struktur yang benar
@@ -45,7 +57,7 @@ const dropdownItems = [
     { label: 'Dashboard', icon: 'i-heroicons-home', to: '/dashboard' }, // Tambahkan Dashboard
     { label: 'Profile', icon: 'i-heroicons-user', to: '/profile' },
     { divider: true }, // Tambahkan divider
-    { label: 'Logout', icon: 'i-heroicons-arrow-right-on-rectangle', click: handleLogout }
+    { label: 'Logout', icon: 'i-heroicons-arrow-right-on-rectangle', onSelect: handleLogout }
 ]
 
 const schema = z.object({
@@ -108,7 +120,11 @@ onMounted(() => {
 
             <!-- User Menu -->
             <UDropdownMenu :items="dropdownItems" :popper="{ placement: 'bottom-end' }">
-                <UAvatar :src="user.avatar" :alt="user.name" size="xl" class="cursor-pointer" />
+                <UAvatar 
+                  :src="user.avatar" 
+                  :alt="user.name" 
+                  size="xl" 
+                  class="cursor-pointer" />
 
                 <!-- Informasi profil di dalam dropdown -->
                 <template #content-top>

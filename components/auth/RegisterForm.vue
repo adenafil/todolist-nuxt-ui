@@ -18,21 +18,34 @@ const props = defineProps({
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-5 px-3" @submit="onSubmit">
-    <UFormField label="Email address" name="email">
-      <UInput v-model="state.email" size="lg" class="w-full" icon="i-heroicons-envelope" placeholder="your@email.com" />
-    </UFormField>
+  <form @submit.prevent="onSubmit">
 
-    <UFormField label="Password" name="password">
-      <UInput v-model="state.password" type="password" size="lg" class="w-full" icon="i-heroicons-lock-closed" placeholder="••••••••" />
-    </UFormField>
-    
-    <UFormField label="Confirm Password" name="confirmPassword">
-      <UInput v-model="state.confirmPassword" type="password" size="lg" class="w-full" icon="i-heroicons-lock-closed" placeholder="••••••••" />
-    </UFormField>
+    <!-- Field lainnya (email, password, dll) -->
+    <UForm :schema="schema" :state="state" class="space-y-5 px-3" @submit="onSubmit">
 
-    <UButton type="submit" block size="lg" color="primary" class="mt-2">
-      Create Account
-    </UButton>
-  </UForm>
+      <UFormField :label="schema.fullName.label" name="fullName">
+        <UInput size="lg" v-model="state.fullName" :placeholder="schema.fullName.placeholder" class="w-full" icon="i-heroicons-user" />
+      </UFormField>
+
+
+      <UFormField label="Email address" name="email">
+        <UInput v-model="state.email" size="lg" class="w-full" icon="i-heroicons-envelope"
+          placeholder="your@email.com" />
+      </UFormField>
+
+      <UFormField label="Password" name="password">
+        <UInput v-model="state.password" type="password" size="lg" class="w-full" icon="i-heroicons-lock-closed"
+          placeholder="••••••••" />
+      </UFormField>
+
+      <UFormField label="Confirm Password" name="confirmPassword">
+        <UInput v-model="state.confirmPassword" type="password" size="lg" class="w-full" icon="i-heroicons-lock-closed"
+          placeholder="••••••••" />
+      </UFormField>
+
+      <UButton type="submit" block size="lg" color="primary" class="mt-2">
+        Create Account
+      </UButton>
+    </UForm>
+  </form>
 </template>

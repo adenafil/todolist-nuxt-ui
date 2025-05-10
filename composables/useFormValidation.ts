@@ -9,6 +9,7 @@ export function useFormValidation() {
 
   // Register schema with password confirmation
   const registerSchema = z.object({
+    fullName: z.string().min(1, 'Full name is required'),
     email: z.string().email('Invalid email'),
     password: z.string().min(8, 'Must be at least 8 characters'),
     confirmPassword: z.string().min(8, 'Must be at least 8 characters')

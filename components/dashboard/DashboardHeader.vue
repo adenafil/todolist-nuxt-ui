@@ -10,6 +10,9 @@ defineProps({
 const emit = defineEmits(['clear-search'])
 const { user } = useUser();
 
+console.log('user', user);
+
+
 const clearSearch = () => {
     emit('clear-search')
 }

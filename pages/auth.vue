@@ -1,18 +1,28 @@
 <script setup lang="ts">
-const { 
+definePageMeta({
+  middleware: ['sanctum:guest'],
+})
+
+const {
   loginSchema, registerSchema, forgotPasswordSchema,
   loginState, registerState, forgotPasswordState,
   formType, isLogin, isRegister, isForgotPassword,
   onLoginSubmit, onRegisterSubmit, onForgotPasswordSubmit
-} = useAuth()
+} = useAuth();
+
+
 
 const handleNavigate = (type: any) => {
   formType.value = type
 }
+
+
+
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-blue-100 dark:from-gray-900 dark:to-indigo-950">
+  <div
+    class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-blue-100 dark:from-gray-900 dark:to-indigo-950">
     <UCard class="w-full max-w-md shadow-xl border-0">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold mb-1">
@@ -28,31 +38,18 @@ const handleNavigate = (type: any) => {
       </div>
 
       <!-- Dynamic form components based on formType -->
-      <AuthLoginForm 
-        v-if="isLogin"
-        :schema="loginSchema"
-        :state="loginState"
-        :on-submit="onLoginSubmit"
-        @navigate="handleNavigate"
-      />
+      <AuthLoginForm v-if="isLogin" :schema="loginSchema" :state="loginState" :on-submit="onLoginSubmit"
+        @navigate="handleNavigate" />
 
-      <AuthRegisterForm
-        v-else-if="isRegister"
-        :schema="registerSchema"
-        :state="registerState"
-        :on-submit="onRegisterSubmit"
-      />
-      
-      <AuthForgotPasswordForm
-        v-else
-        :schema="forgotPasswordSchema"
-        :state="forgotPasswordState"
-        :on-submit="onForgotPasswordSubmit"
-      />
+      <AuthRegisterForm v-else-if="isRegister" :schema="registerSchema" :state="registerState"
+        :on-submit="onRegisterSubmit" />
+
+      <AuthForgotPasswordForm v-else :schema="forgotPasswordSchema" :state="forgotPasswordState"
+        :on-submit="onForgotPasswordSubmit" />
 
       <!-- Social login section -->
       <AuthSocialLogin v-if="!isForgotPassword" />
-      
+
       <!-- Form navigation links -->
       <div class="text-center mt-4 text-sm">
         <template v-if="isLogin">

@@ -8,8 +8,13 @@ import { useSearchState } from '~/composables/useSearchState'
 
 // Define page meta
 definePageMeta({
-  layout: 'login' // Using login layout with navbarLogin
+  layout: 'login', // Using login layout with navbarLogin
+  middleware: ['sanctum:auth'],
+
 })
+
+
+
 
 // Get the shared search state
 const { searchTerm, setSearchTerm } = useSearchState()
@@ -56,6 +61,9 @@ watch(activeFilter, (newFilter, oldFilter) => {
   console.log('Filtered tasks:', filteredAndSortedTasks.value.length);
   console.log('Task counts:', taskCounts.value);
 });
+
+
+
 </script>
 
 <template>
@@ -94,11 +102,11 @@ watch(activeFilter, (newFilter, oldFilter) => {
       </TaskList>
 
       <!-- Empty state message when no tasks -->
-      <TaskEmptyState v-if="filteredAndSortedTasks.length === 0 || tasks.length === 0 || itemsPerPage === 0" :search-term="searchTerm.value"
-        :active-filter="activeFilter" />
+      <TaskEmptyState v-if="filteredAndSortedTasks.length === 0 || tasks.length === 0 || itemsPerPage === 0"
+        :search-term="searchTerm.value" :active-filter="activeFilter" />
 
       <!-- Pagination dengan handler eksplisit -->
-      <div class="py-4 flex justify-center" v-if="filteredAndSortedTasks.length > 0 ">
+      <div class="py-4 flex justify-center" v-if="filteredAndSortedTasks.length > 0">
         <UPagination v-model:page="currentPage" :total="filteredAndSortedTasks.length"
           :page-count="Math.ceil(filteredAndSortedTasks.length / itemsPerPage)" :items-per-page="itemsPerPage" :ui="{
             root: 'flex items-center gap-1',
