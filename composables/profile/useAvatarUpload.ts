@@ -38,15 +38,16 @@ export function useAvatarUpload() {
       });
 
       if (status.value === "error") {
-        throw new Error(error.value.data.message);
+        console.log(error);
+        
+        throw new Error("Failed to upload avatar, please make sure the image is valid");
       }
 
       updateUser({ avatar: data.value.avatar });
       isAvatarModalOpen.value = false;
       showSuccessToast("Profile photo updated successfully");
     } catch (error) {
-      console.error("Error uploading avatar:", error);
-      showErrorToast("An error occurred while uploading the avatar");
+      showErrorToast(error.message || "An error occurred while uploading the avatar");
     }
   };
 

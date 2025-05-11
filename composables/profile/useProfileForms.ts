@@ -25,11 +25,10 @@ export function useProfileForms() {
   });
 
   // Update handler functions
-  const updatePersonalInfo = () => {
+  const updatePersonalInfo = async () => {
     if (validatePersonalInfo(personalInfo)) {
       // Would make API call to update data
       updateUser(personalInfo);
-      showSuccessToast("Profile information updated successfully");
     }
   };
 

@@ -1,10 +1,10 @@
 export function useActivityLog(initialPage = 1, perPage = 3) {
-  const { $api, $token } = useNuxtApp();
+  const { $api } = useNuxtApp();
   const isLoading = ref(true);
   const currentPage = ref(initialPage);
   const totalPages = ref(1);
   const activityLog = ref([]);
-
+  const { token } = useToken();
 
   // Gunakan key untuk caching
   const fetchLogs = async (pageNum = 1) => {
@@ -13,7 +13,7 @@ export function useActivityLog(initialPage = 1, perPage = 3) {
       const { data } = await $api(`/api/user/activity?per_page=${perPage}&page=${pageNum}`, {
         method: "GET",
         headers: {
-          Authorization: $token ? `Bearer ${$token}` : undefined,
+          Authorization: token.value,
         },
       });
 
