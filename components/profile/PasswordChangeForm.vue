@@ -2,6 +2,27 @@
 import { useProfileForms } from '~/composables/profile/useProfileForms'
 
 const { passwordData, passwordErrors, updatePassword } = useProfileForms()
+
+// Create an async handler function
+const handleUpdatePassword = async () => {
+    // Show loading state if desired
+    isLoading.value = true;
+
+    try {
+        // Await the async function
+        await updatePassword();
+        // Additional actions after successful update if needed
+    } catch (error) {
+        console.error('Error updating password:', error);
+        // Handle any errors here if needed
+    } finally {
+        // Reset loading state
+        isLoading.value = false;
+    }
+}
+
+// Add a loading state if you want to show a loading indicator
+const isLoading = ref(false);
 </script>
 
 <template>
@@ -51,10 +72,10 @@ const { passwordData, passwordErrors, updatePassword } = useProfileForms()
                 </p>
             </div>
 
-            <!-- Submit Button -->
+            <!-- Submit Button with loading state -->
             <div class="flex justify-end pt-2">
-                <UButton @click="updatePassword" color="primary" block>
-                    Update Password
+                <UButton @click="handleUpdatePassword" color="primary" block :loading="isLoading" :disabled="isLoading">
+                    {{ isLoading ? 'Updating...' : 'Update Password' }}
                 </UButton>
             </div>
         </div>

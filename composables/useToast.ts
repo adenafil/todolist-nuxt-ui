@@ -10,7 +10,18 @@ export function useNotifications() {
     });
   };
 
+
+  const showErrorToast = (message: string) => {
+    toast.add({
+      title: "Failed",
+      description: message,
+      color: "error",
+      icon: "i-heroicons-x-circle",
+    });
+  }
+
   return {
     showSuccessToast,
+    showErrorToast,
   };
 }

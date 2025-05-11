@@ -2,7 +2,8 @@
 import { reactive } from "vue";
 
 export function useUser() {
-  const user = useState('sanctum.user.identity').value.data;
+  const user = useState('sanctum.user.identity').value.data; 
+  const { $api } = useNuxtApp(); 
 
   // Update user data
   // Define a User interface
@@ -20,7 +21,12 @@ export function useUser() {
   // Define interface for update data (partial user)
   interface UserUpdateData extends Partial<User> {}
 
-  const updateUser = (data: UserUpdateData): void => {    
+  const updateUser = async (data: UserUpdateData): void => {    
+    console.log(data);
+    
+    // Make an API call to update user data
+    
+
     Object.assign(user, data);
   };
 

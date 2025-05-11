@@ -82,7 +82,7 @@ const changeTab = (tab) => {
                 <p class="text-gray-500 text-sm">{{ user.email }}</p>
                 <div class="text-xs text-gray-500 mt-2 flex items-center">
                     <UIcon name="i-heroicons-calendar" class="mr-1" />
-                    Member since {{ new Date(user.joinDate).toLocaleDateString() }}
+                    Member since {{ new Date(user.created_at).toLocaleDateString() }}
                 </div>
             </div>
         </UCard>

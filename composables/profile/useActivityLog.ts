@@ -1,15 +1,21 @@
 export function useActivityLog(initialPage = 1, perPage = 3) {
-  const { $api } = useNuxtApp();
+  const { $api, $token } = useNuxtApp();
   const isLoading = ref(true);
   const currentPage = ref(initialPage);
   const totalPages = ref(1);
   const activityLog = ref([]);
 
+
   // Gunakan key untuk caching
   const fetchLogs = async (pageNum = 1) => {
     isLoading.value = true;
     try {
-      const { data } = await $api(`/api/user/activity?per_page=${perPage}&page=${pageNum}`);
+      const { data } = await $api(`/api/user/activity?per_page=${perPage}&page=${pageNum}`, {
+        method: "GET",
+        headers: {
+          Authorization: $token ? `Bearer ${$token}` : undefined,
+        },
+      });
 
       // Perbaikan untuk mendapatkan nilai yang benar dari response API
       currentPage.value = pageNum;

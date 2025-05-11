@@ -1,6 +1,9 @@
 export default defineNuxtPlugin((nuxtApp) => {
     const config = useRuntimeConfig();
-    const token = useCookie("sanctum.token.cookie").value;    
+    const { token } = useToken();    
+
+    console.log(nuxtApp);
+    
 
     return {
         provide: {
@@ -10,9 +13,8 @@ export default defineNuxtPlugin((nuxtApp) => {
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
-                        "Authorization": token ? `Bearer ${token}` : undefined,
                     },
-                    cache: "force-cache",
+                    cache: "default",
                     ...(option || {})
                 });
             }

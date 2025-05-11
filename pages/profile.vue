@@ -2,7 +2,8 @@
 import { useSearchState } from '~/composables/useSearchState'
 
 definePageMeta({
-  layout: 'login'
+  layout: 'login',
+  middleware: ['sanctum:auth'],
 })
 
 const { user } = useUser()

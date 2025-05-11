@@ -6,7 +6,9 @@ import { useNotifications } from "../useToast";
 export function useProfileForms() {
   const { user, updateUser } = useUser();
   const { validatePersonalInfo, validatePassword, personalErrors, passwordErrors } = useProfileValidation();
-  const { showSuccessToast } = useNotifications();
+  const { showSuccessToast, showErrorToast } = useNotifications();
+  const { $api } = useNuxtApp();
+  const { token } = useToken();
 
   // Reactive states for forms
   const personalInfo = reactive({
@@ -31,14 +33,38 @@ export function useProfileForms() {
     }
   };
 
-  const updatePassword = () => {
+  const updatePassword = async () => {
     if (validatePassword(passwordData)) {
       // Would verify current password and update password
       console.log("Password updated:", passwordData);
-      passwordData.currentPassword = "";
-      passwordData.newPassword = "";
-      passwordData.confirmPassword = "";
-      showSuccessToast("Password updated successfully");
+
+      console.log(token);
+
+      try {
+        const { status, data, error } = await $api("/api/user/change-password", {
+          method: "PATCH",
+          body: {
+            current_password: passwordData.currentPassword,
+            password: passwordData.newPassword,
+            password_confirmation: passwordData.confirmPassword,
+          },
+          headers: {
+            Authorization: token.value,
+          },
+        });
+
+        if (status.value === "error") {
+          throw new Error(error.value.data.message);
+        }
+
+        showSuccessToast("Password updated successfully");
+      } catch (error: any) {
+        showErrorToast(error.message || "An error occurred while updating the password");
+      } finally {
+        passwordData.currentPassword = "";
+        passwordData.newPassword = "";
+        passwordData.confirmPassword = "";
+      }
     }
   };
 
