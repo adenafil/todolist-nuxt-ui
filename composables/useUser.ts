@@ -1,6 +1,3 @@
-// composables/useUser.ts
-import { reactive } from "vue";
-
 export function useUser() {
   const user = useState("sanctum.user.identity").value.data;
   const { $api } = useNuxtApp();
@@ -27,21 +24,21 @@ export function useUser() {
     console.log(data);
 
     // Make an API call to update user data
-    const { status, error } = await $api("/api/user/update-profile", {
-      method: "PATCH",
-      body: data,
-      headers: {
-        Authorization: token.value,
-      },
-    });
+    try {
+      const response = await $api("/api/user/update-profile", {
+        method: "PATCH",
+        body: data,
+        headers: {
+          Authorization: token.value,
+        },
+      });
 
-    if (status.value === "error") {
-      console.error(error.value.data.message);
-      showErrorToast(error.value.data.message || "An error occurred while updating user data");
+      showSuccessToast("Profile information updated successfully");
+    } catch (error) {
+      console.error("Failed to update user data:", error.response._data.message);
+      showErrorToast(error.response._data.message || "An error occurred while updating user data, please try again");
       return;
     }
-
-    showSuccessToast("Profile information updated successfully");
 
     Object.assign(user, data);
   };

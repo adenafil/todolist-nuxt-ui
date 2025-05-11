@@ -24,7 +24,7 @@ export function useAvatarUpload() {
       const formData = new FormData();
       formData.append("avatar", imageFile.value);
 
-      const { data, error, status } = await $api("/api/user/upload-avatar", {
+      const data = await $api("/api/user/upload-avatar", {
         method: "POST",
         body: formData,
         headers: {
@@ -32,21 +32,23 @@ export function useAvatarUpload() {
           Authorization: token.value,
         },
         // Add these options to disable caching
-        key: Date.now().toString(), // Unique key to prevent caching
-        getCachedData: () => undefined, // Disable fetching from cache
-        cache: false, // Disable caching completely
       });
 
-      if (status.value === "error") {
-        console.log(error);
+      console.log(data);
+      
+
+      if (data.status !== "success") {
+        console.log(data.message);
         
-        throw new Error("Failed to upload avatar, please make sure the image is valid");
+        throw new Error(data.message || "Failed to upload avatar");
       }
 
-      updateUser({ avatar: data.value.avatar });
+      updateUser({ avatar: data.avatar });
       isAvatarModalOpen.value = false;
-      showSuccessToast("Profile photo updated successfully");
+      showSuccessToast(data.message || "Avatar uploaded successfully");
     } catch (error) {
+      console.log(error);
+      
       showErrorToast(error.message || "An error occurred while uploading the avatar");
     }
   };

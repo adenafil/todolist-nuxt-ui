@@ -10,21 +10,23 @@ export function useActivityLog(initialPage = 1, perPage = 3) {
   const fetchLogs = async (pageNum = 1) => {
     isLoading.value = true;
     try {
-      const { data } = await $api(`/api/user/activity?per_page=${perPage}&page=${pageNum}`, {
+      const data = await $api(`/api/user/activity?per_page=${perPage}&page=${pageNum}`, {
         method: "GET",
         headers: {
           Authorization: token.value,
         },
+                
       });
+      
 
       // Perbaikan untuk mendapatkan nilai yang benar dari response API
       currentPage.value = pageNum;
 
       // Ambil total halaman dari meta data API response
-      totalPages.value = Array.isArray(data.value.meta?.last_page) ? data.value.meta.last_page[0] : data.value.meta?.last_page || 1;
+      totalPages.value = Array.isArray(data.meta?.last_page) ? data.meta.last_page[0] : data.meta?.last_page || 1;
 
       // Update activity log dengan data baru
-      activityLog.value = data.value.data.map((item: any) => {
+      activityLog.value = data.data.map((item: any) => {
         return {
           action: item.action,
           device: item.device,
