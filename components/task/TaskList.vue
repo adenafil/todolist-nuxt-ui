@@ -11,6 +11,7 @@ const props = defineProps({
     }
 });
 
+const { $isHydrating } = useNuxtApp();
 const emit = defineEmits(['edit-task', 'delete-task', 'toggle-complete']);
 
 // Menambahkan expanded state untuk menampilkan deskripsi
@@ -105,9 +106,11 @@ const isTaskExpanded = (taskId) => {
         </div>
     </div>
 
-    <!-- Mobile scroll helper indicator (hanya tampil di layar kecil) -->
-    <div class="sm:hidden text-xs text-center text-gray-500 mt-2 flex items-center justify-center">
+
+    <!-- Mobile scroll helper - only in client -->
+    <div v-if="tasks.length > 0"
+        class="sm:hidden text-xs text-center text-gray-500 mt-2 flex items-center justify-center">
         <UIcon name="i-heroicons-arrows-right-left" class="h-3 w-3 mr-1" />
-        <span>Swipe left/right to see more 🎵</span>
+        <span>Swipe left/right to see more</span>
     </div>
 </template>

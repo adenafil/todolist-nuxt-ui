@@ -1,113 +1,148 @@
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 import type { Task, TaskFilter, TaskStats } from "~/types/task";
-import { isDateExpired } from "~/utils/dates";
-import { getPriorityWeight } from "~/utils/taskPriority";
+import { useTasks } from "~/composables/task/useTasks";
 
 export function useTaskFilters(tasks: Ref<Task[]>, externalSearchTerm?: Ref<string>) {
+  // Add isHydrating flag
+  const isHydrating = ref(true);
+  const { fetchTasks, isLoading } = useTasks();
+
   // Use the external search term if provided, otherwise create a local one
   const searchTerm = externalSearchTerm || ref("");
   const activeFilter = ref<TaskFilter>("all");
   const sortOrder = ref("date-asc");
 
-  // Update search term function (only needed if using a local search term)
-  const setSearchTerm = (term: string) => {
-    if (!externalSearchTerm) {
-      searchTerm.value = term;
-    }
-  };
-
-  const setActiveFilter = (filter: TaskFilter) => {
-    activeFilter.value = filter;
-  };
-
-  const setSortOrder = (order: string) => {
-    sortOrder.value = order;
-  };
-
-  // PERBAIKAN: Enhance filtered tasks computation
-  const filteredTasks = computed(() => {
-    // Create a fresh copy to ensure reactive updates
-    let filtered = [...tasks.value];
-
-    // Apply search filter
-    if (searchTerm.value) {
-      const term = searchTerm.value.toLowerCase().trim();
-      filtered = filtered.filter((task) => task.title.toLowerCase().includes(term) || (task.description && task.description.toLowerCase().includes(term)));
-    }
-
-    // Apply tab filter
-    switch (activeFilter.value) {
+  // Convert app filter to API filter
+  const mapFilterToApiStatus = (filter: TaskFilter): string => {
+    switch (filter) {
       case "in-progress":
-        filtered = filtered.filter((task) => !task.completed && !isDateExpired(task.dueDate));
-        break;
+        return "in_progress";
       case "completed":
-        filtered = filtered.filter((task) => task.completed);
-        break;
+        return "completed";
       case "expired":
-        filtered = filtered.filter((task) => isDateExpired(task.dueDate));
-        break;
-      case "priority-high":
-        filtered = filtered.filter((task) => task.priority === "high");
-        break;
-      case "priority-medium":
-        filtered = filtered.filter((task) => task.priority === "medium");
-        break;
-      case "priority-low":
-        filtered = filtered.filter((task) => task.priority === "low");
-        break;
+        return "expired";
       default:
-        // "all" filter - no additional filtering
-        break;
+        return "all";
     }
+  };
 
-    return filtered;
-  });
-
-  // Apply sorting after filtering
-  const filteredAndSortedTasks = computed(() => {
-    const filtered = [...filteredTasks.value];
-
-    // Sort based on current sort order
-    switch (sortOrder.value) {
-      case "date-asc":
-        filtered.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-        break;
-      case "date-desc":
-        filtered.sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
-        break;
-      case "priority-desc":
-        filtered.sort((a, b) => getPriorityWeight(b.priority) - getPriorityWeight(a.priority));
-        break;
-      case "priority-asc":
-        filtered.sort((a, b) => getPriorityWeight(a.priority) - getPriorityWeight(b.priority));
-        break;
-    }
-
-    return filtered;
-  });
-
-  // Task counts for filter tabs
+  // Task counts for filter tabs - now based on API data
+  // Modify the computed to handle SSR/hydration state
   const taskCounts = computed<TaskStats>(() => {
+    // During hydration on client side, return empty counts to match server
+    if (process.client && isHydrating.value) {
+      return {
+        all: 0,
+        inProgress: 0,
+        completed: 0,
+        expired: 0,
+        priorityHigh: 0,
+        priorityMedium: 0,
+        priorityLow: 0,
+      };
+    }
+    
     return {
       all: tasks.value.length,
-      inProgress: tasks.value.filter((t) => !t.completed && !isDateExpired(t.dueDate)).length,
-      completed: tasks.value.filter((t) => t.completed).length,
-      expired: tasks.value.filter((t) => isDateExpired(t.dueDate)).length,
+      inProgress: tasks.value.filter((t) => t.status === "in_progress").length,
+      completed: tasks.value.filter((t) => t.status === "completed").length,
+      expired: tasks.value.filter((t) => t.status === "expired").length,
       priorityHigh: tasks.value.filter((t) => t.priority === "high").length,
       priorityMedium: tasks.value.filter((t) => t.priority === "medium").length,
       priorityLow: tasks.value.filter((t) => t.priority === "low").length,
     };
   });
 
+  // Apply filters through API - ensure this updates when tasks change
+  const applyFilters = async () => {
+    if (isLoading.value) return; // Prevent duplicate calls during loading
+
+    const params: Record<string, string> = {};
+
+    // Add status filter if not "all"
+    if (activeFilter.value !== "all" && !activeFilter.value.startsWith("priority-")) {
+      params.status = mapFilterToApiStatus(activeFilter.value);
+    }
+
+    // Add priority filter
+    if (activeFilter.value.startsWith("priority-")) {
+      params.priority = activeFilter.value.replace("priority-", "");
+    }
+
+    // Add search term
+    if (searchTerm.value) {
+      params.search = searchTerm.value;
+    }
+
+    // Add sorting
+    if (sortOrder.value) {
+      // Map app sort order to API sort parameters
+      const [field, direction] = sortOrder.value.split("-");
+      params.sort_by = field === "date" ? "due_date" : "priority";
+      params.sort_direction = direction;
+    }
+
+    // Fetch tasks with these filters
+    await fetchTasks(params);
+    
+    // Mark hydration as complete after first data fetch
+    isHydrating.value = false;
+  };
+
+  // Set search term and trigger API call
+  const setSearchTerm = (term: string) => {
+    if (!externalSearchTerm) {
+      searchTerm.value = term;
+    }
+    applyFilters();
+  };
+
+  // Set active filter and trigger API call
+  const setActiveFilter = (filter: TaskFilter) => {
+    activeFilter.value = filter;
+    applyFilters();
+  };
+
+  // Set sort order and trigger API call
+  const setSortOrder = (order: string) => {
+    sortOrder.value = order;
+    applyFilters();
+  };
+
+  // Watch for external search term changes
+  if (externalSearchTerm) {
+    watch(externalSearchTerm, () => {
+      applyFilters();
+    });
+  }
+
+  // Watch for filter changes
+  watch(
+    [activeFilter, sortOrder],
+    () => {
+      // Don't call API during initial component setup on client
+      if (process.client && isHydrating.value) return;
+      applyFilters();
+    },
+    { immediate: true }
+  );
+
+  // Once mounted (client-side only), mark hydration as complete
+  onMounted(() => {
+    // Use nextTick to ensure we're fully hydrated
+    nextTick(() => {
+      isHydrating.value = false;
+    });
+  });
+
   return {
     searchTerm,
     activeFilter,
-    filteredTasks,
     taskCounts,
     setSearchTerm,
     setActiveFilter,
     sortOrder,
     setSortOrder,
-    filteredAndSortedTasks,
+    tasks,
   };
 }

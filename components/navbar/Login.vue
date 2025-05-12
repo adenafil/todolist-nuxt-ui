@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toast } from '#build/ui'
 import { z } from 'zod'
+import { useRouteQuery } from '~/composables/useRouteQuery'
 
 const emit = defineEmits(['search'])
 const router = useRouter()
@@ -13,16 +14,24 @@ const state = reactive({
     search: ''
 })
 
+const { updateSearch } = useRouteQuery()
 
 const searchTasks = () => {
     if (state.search.trim()) {
         // Update the shared state
         setSearchTerm(state.search)
+
+        // Update URL query parameter
+        updateSearch(state.search)
+
         emit('search', state.search)
 
         // Navigate to dashboard if we're not already there
         if (route.path !== '/dashboard') {
-            router.push('/dashboard')
+            router.push({
+                path: '/dashboard',
+                query: { search: state.search }
+            })
         }
 
         console.log('Searching for:', state.search)
@@ -32,7 +41,7 @@ const searchTasks = () => {
 const user = useState('sanctum.user.identity').value.data;
 
 
-const {logout} = useSanctumAuth();
+const { logout } = useSanctumAuth();
 
 
 // Fungsi handler untuk logout
@@ -83,7 +92,8 @@ const handleSearchSubmit = () => {
 const clearSearch = () => {
     state.search = ''
     emit('search', '')
-    setSearchTerm('') // Update shared state
+    setSearchTerm('')
+    updateSearch('')  // Clear the URL parameter
 }
 
 // Make sure the search input reflects the current search term
@@ -120,11 +130,7 @@ onMounted(() => {
 
             <!-- User Menu -->
             <UDropdownMenu :items="dropdownItems" :popper="{ placement: 'bottom-end' }">
-                <UAvatar 
-                  :src="user.avatar" 
-                  :alt="user.name" 
-                  size="xl" 
-                  class="cursor-pointer" />
+                <UAvatar :src="user.avatar" :alt="user.name" size="xl" class="cursor-pointer" />
 
                 <!-- Informasi profil di dalam dropdown -->
                 <template #content-top>

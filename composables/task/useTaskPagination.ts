@@ -1,26 +1,52 @@
 // composables/task/useTaskPagination.ts
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, computed, watch, nextTick, onMounted } from "vue";
+import { useNuxtApp } from "#app";
 import type { Task } from "~/types/task";
 
 export function useTaskPagination(filteredTasks: Ref<Task[]>) {
+  const { $isHydrating } = useNuxtApp();
+  const isHydrating = ref(true);
   const currentPage = ref(1);
   const itemsPerPage = ref(5);
 
-  // Perbaikan: Force immediate watch untuk reset pagination
+  // Combine both hydration flags for extra safety
+  const isCurrentlyHydrating = computed(() => {
+    return isHydrating.value || ($isHydrating && $isHydrating.value);
+  });
+
+  // Improve watch to handle hydration state
   watch(
     filteredTasks,
     () => {
+      if (isCurrentlyHydrating.value) return;
+
       console.log("Filtered tasks changed, checking pagination");
+      // If we're not on the first page and there are no items on the current page
+      // (due to deletion or filtering), reset to page 1
       if (filteredTasks.value.length > 0 && (currentPage.value - 1) * itemsPerPage.value >= filteredTasks.value.length) {
         console.log("Resetting to page 1 due to filter change");
         currentPage.value = 1;
       }
+
+      // If a new task was added and we're on page 1, ensure we stay there to see it
+      if (filteredTasks.value.length > 0 && currentPage.value === 1) {
+        // Force a re-render of paginated tasks
+        nextTick(() => {
+          // This triggers the computed to re-evaluate
+          currentPage.value = 1;
+        });
+      }
     },
-    { immediate: true }
+    { immediate: true, deep: true } // Add deep watching to catch array mutations
   );
 
-  // Perbaikan: Memaksa pembaruan paginatedTasks dengan dependensi yang eksplisit
+  // Modify computed property to handle hydration state
   const paginatedTasks = computed(() => {
+    // During hydration, return empty array to match server
+    if (isCurrentlyHydrating.value) {
+      return [];
+    }
+
     // Memaksa computed property untuk bereaksi terhadap perubahan
     const page = currentPage.value;
     const perPage = itemsPerPage.value;
@@ -35,6 +61,13 @@ export function useTaskPagination(filteredTasks: Ref<Task[]>) {
 
     // Slice dari fresh copy array untuk memastikan reaktivitas
     return [...allTasks].slice(startIndex, endIndex);
+  });
+
+  // Mark hydration as complete once mounted
+  onMounted(() => {
+    nextTick(() => {
+      isHydrating.value = false;
+    });
   });
 
   // Watch page changes for debugging

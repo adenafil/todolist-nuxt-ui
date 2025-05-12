@@ -33,8 +33,8 @@ const newTask = reactive({
     title: '',
     description: '', // Tambahkan field deskripsi
     priority: 'medium',
-    dueDate: new Date().toISOString().slice(0, 10),
-    completed: false
+    due_date: new Date().toISOString().slice(0, 10),
+    completed: 'in_progress'
 })
 
 // Items untuk select menu dengan warna yang sesuai
@@ -62,7 +62,7 @@ watch(() => props.taskToEdit, (newVal) => {
         newTask.title = newVal.title || '';
         newTask.description = newVal.description || '';
         newTask.priority = newVal.priority || 'medium';
-        newTask.dueDate = newVal.dueDate || new Date().toISOString().slice(0, 10);
+        newTask.due_date = newVal.dueDate || new Date().toISOString().slice(0, 10);
         newTask.completed = newVal.completed || false;
     }
 }, { immediate: true });
@@ -78,8 +78,8 @@ const resetForm = () => {
     newTask.title = '';
     newTask.description = '';
     newTask.priority = 'medium';
-    newTask.dueDate = new Date().toISOString().slice(0, 10);
-    newTask.completed = false;
+    newTask.due_date = new Date().toISOString().slice(0, 10);
+    newTask.completed = '';
 }
 
 const handleSubmit = () => {
@@ -90,16 +90,14 @@ const handleSubmit = () => {
             title: newTask.title,
             description: newTask.description,
             priority: newTask.priority,
-            dueDate: newTask.dueDate
+            due_date: newTask.due_date
         };
         emit('update-task', updatedTask);
     } else {
         // Mode tambah - buat task baru
-        const taskWithId = {
-            ...newTask,
-            id: Date.now()
-        }
-        emit('add-task', taskWithId);
+        console.log(newTask);
+        
+        emit('add-task', newTask);
     }
 
     // Reset form dan tutup modal
@@ -134,35 +132,7 @@ const handleSubmit = () => {
                 <!-- Priority Field - menggunakan USelect -->
                 <UFormField label="Priority" name="priority">
                     <USelectMenu v-model="selectedPriority" :items="priorityItems" placeholder="Select priority"
-                        size="lg" class="w-full" value-attribute="value" :ui="{
-                            button: {
-                                size: 'lg',
-                                width: 'w-full',
-                                height: 'h-10',
-                                padding: 'px-3',
-                                font: 'text-base',
-                                icon: {
-                                    trailing: {
-                                        padding: 'pl-2'
-                                    }
-                                }
-                            },
-                            option: {
-                                selected: {
-                                    wrapper: 'bg-primary-500 text-white dark:bg-primary-400 dark:text-gray-900'
-                                }
-                            }
-                        }">
-                        <template #label="{ item }">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full" :class="{
-                                    'bg-red-500': item.value === 'high',
-                                    'bg-yellow-500': item.value === 'medium',
-                                    'bg-green-500': item.value === 'low'
-                                }"></div>
-                                {{ item.label }}
-                            </div>
-                        </template>
+                        size="lg" class="w-full" value-attribute="value">
                     </USelectMenu>
                 </UFormField>
 

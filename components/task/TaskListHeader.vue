@@ -1,4 +1,3 @@
-<!-- components/task/TaskListHeader.vue -->
 <script setup lang="ts">
 defineProps({
     filteredCount: {

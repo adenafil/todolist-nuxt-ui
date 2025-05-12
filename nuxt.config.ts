@@ -4,6 +4,18 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxt/ui", "nuxt-auth-sanctum"],
   css: ["@/assets/css/main.css"],
+
+  // Add SSR configuration
+  ssr: true,
+
+  // Add experimental features for better hydration
+  experimental: {
+    // This helps with hydration by skipping some reactivity transforms
+    asyncContext: true,
+    // Improve hydration performance
+    payloadExtraction: true,
+  },
+
   vite: {
     server: {
       allowedHosts: true,
@@ -23,8 +35,8 @@ export default defineNuxtConfig({
     redirect: {
       onLogin: "/dashboard", // Custom route after successful login
       onLogout: "/auth",
-      onAuthOnly: '/auth',
-      onGuestOnly: '/dashboard'
+      onAuthOnly: "/auth",
+      onGuestOnly: "/dashboard",
     },
     csrf: {
       header: "X-XSRF-TOKEN",
