@@ -13,6 +13,16 @@ definePageMeta({
   middleware: ['sanctum:auth'],
 })
 
+useSeoMeta({
+  title: 'Dashboard',
+  ogTitle: 'Dashboard',
+  description: 'Manage your tasks efficiently with our dashboard.',
+  ogDescription: 'Manage your tasks efficiently with our dashboard.',
+  author: "Ade Nafil Firmansah",
+  keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky",
+
+})
+
 // Get route query parameters
 const {
   page: queryPage,

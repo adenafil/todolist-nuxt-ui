@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/ui": "^3.1.1",
     "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/seo": "^3.0.3",
     "nuxt": "^3.17.1",
     "nuxt-auth-sanctum": "^0.6.6",
     "typescript": "^5.8.3",

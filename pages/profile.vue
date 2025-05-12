@@ -4,6 +4,16 @@ import { useSearchState } from '~/composables/useSearchState'
 definePageMeta({
   layout: 'login',
   middleware: ['sanctum:auth'],
+});
+
+useSeoMeta({
+  title: 'Profile',
+  ogTitle: 'Profile',
+  description: 'Manage your profile settings and preferences.',
+  ogDescription: 'Manage your profile settings and preferences.',
+  author: "Ade Nafil Firmansah",
+  keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky",
+
 })
 
 const { user } = useUser()

@@ -3,6 +3,15 @@ definePageMeta({
   middleware: ['sanctum:guest'],
 })
 
+useSeoMeta({
+  title: 'Authentication',
+  ogTitle: 'Authentication',
+  description: 'Login, Register, or Reset your password.',
+  ogDescription: 'Login, Register, or Reset your password.',
+  author: "Ade Nafil Firmansah",
+  keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky",
+})
+
 const {
   loginSchema, registerSchema, forgotPasswordSchema,
   loginState, registerState, forgotPasswordState,

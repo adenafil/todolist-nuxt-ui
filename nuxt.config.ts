@@ -1,18 +1,27 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: process.env.SITE_NAME || "Taskify",
+      titleTemplate: `%s | ${process.env.SITE_NAME || "Taskify"}`,
+      htmlAttrs: {
+        lang: "en",
+      }
+    },
+    pageTransition: { name: "page", mode: "out-in" },
+    layoutTransition: { name: "page", mode: "out-in" },
+  },
+
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "nuxt-auth-sanctum"],
+  modules: ["@nuxt/ui", "nuxt-auth-sanctum", "@nuxtjs/seo"],
   css: ["@/assets/css/main.css"],
 
   // Add SSR configuration
   ssr: true,
 
-  // Add experimental features for better hydration
   experimental: {
-    // This helps with hydration by skipping some reactivity transforms
     asyncContext: true,
-    // Improve hydration performance
     payloadExtraction: true,
   },
 
