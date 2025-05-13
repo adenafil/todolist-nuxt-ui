@@ -2,6 +2,7 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import * as z from "zod";
 
 export function useAuth() {
+  const runtimeConfig = useRuntimeConfig()
   const { loginSchema, registerSchema, forgotPasswordSchema } = useFormValidation();
   const { add } = useToast();
 
@@ -58,7 +59,7 @@ export function useAuth() {
     // Here you would add actual registration logic
 
     try {
-      const data = await $fetch("http://localhost:8000/api/register", {
+      const data = await $fetch(`${runtimeConfig.public.API_URL}/api/register`, {
         method: "POST",
         body: {
           email: event.data.email,

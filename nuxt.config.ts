@@ -20,6 +20,13 @@ export default defineNuxtConfig({
   // Add SSR configuration
   ssr: true,
 
+  runtimeConfig: {
+    public: {
+      API_URL: process.env.API_URL,
+      SITE_NAME: process.env.SITE_NAME || "Taskify",
+    },
+  },
+  
   experimental: {
     asyncContext: true,
     payloadExtraction: true,
@@ -34,7 +41,8 @@ export default defineNuxtConfig({
     mode: "token",
     redirectIfAuthenticated: true,
     redirectIfUnauthenticated: true,
-    baseUrl: "http://localhost:8000", // Laravel API
+    baseUrl: process.env.API_URL, // Laravel San 🥰 API
+    origin: process.env.SITE_NAME, // Nuxt Chan 😍app
     endpoints: {
       csrf: "/sanctum/csrf-cookie",
       login: "/api/login",

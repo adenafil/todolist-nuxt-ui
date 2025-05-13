@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const runtimeConfig = useRuntimeConfig()
+</script>
+
 <template>
   <div class="relative my-6">
     <div class="absolute inset-0 flex items-center">
@@ -9,9 +13,9 @@
       </span>
     </div>
   </div>
-
+  
   <div class="grid grid-cols-2 gap-3 mb-4">
-    <UButton color="neutral" variant="outline" block icon="i-simple-icons-google">
+    <UButton :href="`${runtimeConfig.public.API_URL}/login/google`" color="neutral" variant="outline" block icon="i-simple-icons-google">
       Google
     </UButton>
     <UButton color="neutral" variant="outline" block icon="i-simple-icons-github">
