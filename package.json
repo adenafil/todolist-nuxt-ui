@@ -15,6 +15,7 @@
     "@nuxtjs/seo": "^3.0.3",
     "nuxt": "^3.17.1",
     "nuxt-auth-sanctum": "^0.6.6",
+    "nuxt-vue3-google-signin": "^0.0.11",
     "typescript": "^5.8.3",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1",

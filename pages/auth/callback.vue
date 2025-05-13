@@ -11,25 +11,62 @@ useSeoMeta({
 
 // Define meta to disable navigation during authentication
 definePageMeta({
-    middleware: ['sanctum:guest'],
+    // Remove sanctum:guest middleware - we don't want middleware to run during token processing
+    middleware: [],
 })
 
-const token = useCookie('sanctum.token.cookie');
+const token = useCookie('sanctum.token.cookie', {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/',
+    sameSite: 'lax'
+});
 
 // Add a loading state
 const isAuthenticating = ref(true)
+const authError = ref(false)
 
 // Router for redirection after auth completes
+const router = useRouter()
 const route = useRoute();
 
-// Automatically redirect to dashboard after a few seconds
-// This simulates waiting for the auth callback to complete
-onMounted(() => {
-    setTimeout(() => {
-        isAuthenticating.value = false
-        token.value = typeof route.query.token === 'string' ? route.query.token : route.query.token?.[0] || null
+// Process the token immediately on component creation
+const processToken = async () => {
+    try {
+        // Set the token
+        const tokenValue = typeof route.query.token === 'string'
+            ? route.query.token
+            : route.query.token?.[0] || null
+
+        if (!tokenValue) {
+            authError.value = true
+            router.push('/login?error=no_token')
+            return
+        }
+
+        // Set the token
+        token.value = tokenValue
+
+        // Add a longer delay to ensure the cookie is set and processed
+        await new Promise(resolve => setTimeout(resolve, 300))
+
+        // Force localStorage to also keep a copy
+        localStorage.setItem('auth_token', tokenValue)
+
+        // Force a reload instead of router navigation
+        // This is the most reliable way to ensure middleware picks up the new auth state
         window.location.href = '/dashboard'
-    }, 3000)
+    } catch (error) {
+        console.error('Authentication error:', error)
+        authError.value = true
+    } finally {
+        isAuthenticating.value = false
+    }
+}
+
+// Run this as soon as the component mounts
+onMounted(() => {
+    // Small delay for UX
+    setTimeout(processToken, 1000)
 })
 </script>
 

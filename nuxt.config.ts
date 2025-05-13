@@ -10,9 +10,9 @@ export default defineNuxtConfig({
       meta: [
         {
           name: "google-site-verification",
-          content: "T4Zj4_gH0aIjm-hCMB9d1Z7Xj4ksSSR5uoeT9Nead_o"
-        }
-      ]
+          content: "T4Zj4_gH0aIjm-hCMB9d1Z7Xj4ksSSR5uoeT9Nead_o",
+        },
+      ],
     },
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "page", mode: "out-in" },
@@ -20,7 +20,11 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "nuxt-auth-sanctum", "@nuxtjs/seo"],
+  modules: ["@nuxt/ui", "nuxt-auth-sanctum", "@nuxtjs/seo", "nuxt-vue3-google-signin"],
+  googleSignIn: {
+    clientId: "524928128882-qf2p7f365ftmpj7mngm2n96lie45u8g7.apps.googleusercontent.com",
+  },
+
   css: ["@/assets/css/main.css"],
 
   // Add SSR configuration
