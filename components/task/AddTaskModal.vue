@@ -25,7 +25,7 @@ const taskSchema = z.object({
     priority: z.string({
         required_error: 'Please select a priority'
     }),
-    dueDate: z.string().min(1, 'Due date is required')
+    due_date: z.string().min(1, 'Due date is required')
 })
 
 // Tambahkan description field ke objek task
@@ -58,6 +58,8 @@ const selectedPriority = computed({
 
 // Jika dalam mode edit, isi form dengan data task yang akan diedit
 watch(() => props.taskToEdit, (newVal) => {
+    console.log(newVal);
+    
     if (newVal && props.editMode) {
         newTask.title = newVal.title || '';
         newTask.description = newVal.description || '';
@@ -138,7 +140,7 @@ const handleSubmit = () => {
 
                 <!-- Due Date Field -->
                 <UFormField label="Due Date" name="dueDate">
-                    <UInput type="date" v-model="newTask.dueDate" icon="i-heroicons-calendar" size="lg"
+                    <UInput type="date" v-model="newTask.due_date" icon="i-heroicons-calendar" size="lg"
                         class="w-full" />
                 </UFormField>
 
