@@ -6,7 +6,13 @@ export default defineNuxtConfig({
       titleTemplate: `%s | ${process.env.SITE_NAME || "Taskify"}`,
       htmlAttrs: {
         lang: "en",
-      }
+      },
+      meta: [
+        {
+          name: "google-site-verification",
+          content: "T4Zj4_gH0aIjm-hCMB9d1Z7Xj4ksSSR5uoeT9Nead_o"
+        }
+      ]
     },
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "page", mode: "out-in" },
@@ -26,7 +32,7 @@ export default defineNuxtConfig({
       SITE_NAME: process.env.SITE_NAME || "Taskify",
     },
   },
-  
+
   experimental: {
     asyncContext: true,
     payloadExtraction: true,
