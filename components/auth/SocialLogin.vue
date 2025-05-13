@@ -13,12 +13,12 @@ const runtimeConfig = useRuntimeConfig()
       </span>
     </div>
   </div>
-  
+
   <div class="grid grid-cols-2 gap-3 mb-4">
     <UButton :href="`${runtimeConfig.public.API_URL}/login/google`" color="neutral" variant="outline" block icon="i-simple-icons-google">
       Google
     </UButton>
-    <UButton color="neutral" variant="outline" block icon="i-simple-icons-github">
+    <UButton  :href="`${runtimeConfig.public.API_URL}/login/github`" color="neutral" variant="outline" block icon="i-simple-icons-github">
       GitHub
     </UButton>
   </div>
