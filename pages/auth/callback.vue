@@ -63,6 +63,9 @@ const processToken = async () => {
     }
 }
 
+console.log(route.query);
+
+
 // Run this as soon as the component mounts
 onMounted(() => {
     // Small delay for UX
