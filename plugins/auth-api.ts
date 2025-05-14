@@ -3,6 +3,10 @@ const cache = new Map();
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
   const route = useRoute();
+  // set color mode to be bro my men 😎 🎶 not like us played dawg
+  const colorMode = useColorMode()
+  colorMode.preference = 'dark'
+  
 
   // Function to clear specific cache entries
   const clearCache = (pattern?: string | RegExp) => {
