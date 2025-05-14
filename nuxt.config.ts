@@ -17,6 +17,9 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "page", mode: "out-in" },
   },
+  sitemap: {
+    xsl: false,
+  },
 
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
