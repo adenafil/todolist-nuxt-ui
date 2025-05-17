@@ -11,8 +11,7 @@ useSeoMeta({
 
 // Define meta to disable navigation during authentication
 definePageMeta({
-    // Remove sanctum:guest middleware - we don't want middleware to run during token processing
-    middleware: [],
+    middleware: ['sanctum:guest'],
 })
 
 const token = useCookie('sanctum.token.cookie', {

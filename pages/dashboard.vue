@@ -7,6 +7,9 @@ import { useSearchState } from '~/composables/useSearchState'
 import { useTasks } from '~/composables/task/useTasks'
 import { useRouteQuery } from '~/composables/useRouteQuery'
 
+
+const router = useRouter();
+
 // Define page meta
 definePageMeta({
   layout: 'login',
@@ -159,7 +162,7 @@ watch(sortOrder, (newSort) => {
 
 watch(itemsPerPage, (newPerPage) => {
   updatePerPage(newPerPage)
-  fetchTasks(createTaskParams({ per_page: newPerPage }));
+  fetchTasks(createTaskParams({ per_page: newPerPage, page: 1 }));
 })
 
 watch(searchTerm, (newSearch) => {

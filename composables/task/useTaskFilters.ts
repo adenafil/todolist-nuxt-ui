@@ -30,6 +30,7 @@ export function useTaskFilters(tasks: Ref<Task[]>, externalSearchTerm?: Ref<stri
   // Modify the computed to handle SSR/hydration state
   const taskCounts = computed<TaskStats>(() => {
     // During hydration on client side, return empty counts to match server
+        
     if (process.client && isHydrating.value) {
       return {
         all: 0,
@@ -63,7 +64,7 @@ export function useTaskFilters(tasks: Ref<Task[]>, externalSearchTerm?: Ref<stri
     if (activeFilter.value !== "all" && !activeFilter.value.startsWith("priority-")) {
       params.status = mapFilterToApiStatus(activeFilter.value);
     }
-
+    
     // Add priority filter
     if (activeFilter.value.startsWith("priority-")) {
       params.priority = activeFilter.value.replace("priority-", "");

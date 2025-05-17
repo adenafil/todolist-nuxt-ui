@@ -120,6 +120,7 @@ export function useTasks() {
   const toggleTaskComplete = async (taskId: number) => {
     try {
       const task = tasks.value.find((t) => t.id === taskId);
+      
       if (!task) return;
 
       const newStatus = task.completed ? "in_progress" : "completed";

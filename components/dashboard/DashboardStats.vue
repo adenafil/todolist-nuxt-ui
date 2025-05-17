@@ -1,4 +1,3 @@
-<!-- components/dashboard/DashboardStats.vue -->
 <script setup lang="ts">
 defineProps({
     stats: {
@@ -10,7 +9,6 @@ defineProps({
 
 <template>
     <!-- hi ade nafil, pleasse check again or do research about why this fucking component data only rendered on client side -->
-    <ClientOnly>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <UCard v-for="stat in stats" :key="stat.label" class="flex items-center">
                 <div class="flex items-center">
@@ -23,5 +21,4 @@ defineProps({
                 </div>
             </UCard>
         </div>
-    </ClientOnly>
 </template>

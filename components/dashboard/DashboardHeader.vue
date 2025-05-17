@@ -1,4 +1,3 @@
-<!-- components/dashboard/DashboardHeader.vue -->
 <script setup lang="ts">
 defineProps({
     searchTerm: {
@@ -9,8 +8,6 @@ defineProps({
 
 const emit = defineEmits(['clear-search'])
 const { user } = useUser();
-
-console.log('user', user);
 
 
 const clearSearch = () => {

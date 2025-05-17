@@ -1,4 +1,3 @@
-<!-- components/task/TaskFilters.vue -->
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { TaskFilter } from '~/types/task'
@@ -12,7 +11,6 @@ const props = defineProps({
     taskCounts: {
         type: Object,
         required: true,
-        // Tambahkan default untuk mencegah undefined
         default: () => ({
             all: 0,
             inProgress: 0,
@@ -27,7 +25,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:filter'])
 
-// Fungsi untuk memastikan filter priority berfungsi dengan benar
 const setFilter = (filter: TaskFilter) => {
     console.log('Setting filter to:', filter)
     emit('update:filter', filter)
