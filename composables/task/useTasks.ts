@@ -14,13 +14,6 @@ export function useTasks() {
   const currentPage = ref(1);
   const totalTasks = useState('totalTasks', () => 0);
 
-  // Clear cache when dashboard is mounted or activated
-  onMounted(() => {
-    if (route.path === "/dashboard") {
-      $clearApiCache(/\/api\/tasks/);
-    }
-  });
-
   // Fetch tasks with filters
   const fetchTasks = async (params = {}) => {
     isLoading.value = true;
@@ -108,6 +101,7 @@ export function useTasks() {
         showSuccessToast("Task deleted successfully");
         // Explicitly clear cache after mutation
         $clearApiCache(/\/api\/tasks/);
+        fetchTasks();
       } else {
         showErrorToast("Failed to delete task");
       }
@@ -183,11 +177,6 @@ export function useTasks() {
       showErrorToast("Failed to update task");
     }
   };
-
-  // Initialize by fetching tasks on component mount
-  onMounted(() => {
-    fetchTasks();
-  });
 
   return {
     tasks,

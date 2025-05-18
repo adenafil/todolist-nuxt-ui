@@ -8,8 +8,6 @@ import { useTasks } from '~/composables/task/useTasks'
 import { useRouteQuery } from '~/composables/useRouteQuery'
 
 
-const router = useRouter();
-
 // Define page meta
 definePageMeta({
   layout: 'login',
@@ -43,15 +41,9 @@ const {
 // Get the shared search state
 const { searchTerm, setSearchTerm } = useSearchState()
 
-// Set initial search term from URL
-onMounted(() => {
-  if (querySearch.value) {
-    setSearchTerm(querySearch.value)
-  }
-})
-
 // Initialize tasks composable
 const { tasks, isLoading, totalPages, currentPage, fetchTasks, addTask, deleteTask, totalTasks, toggleTaskComplete, updateTask } = useTasks()
+
 
 // Use task filters with shared search term
 const {
@@ -62,22 +54,27 @@ const {
 
 // Since filtering happens on the API, we can use the tasks directly for pagination
 const { itemsPerPage, paginatedTasks, setItemsPerPage, setPage } = useTaskPagination(tasks)
+
+
 const { taskStats } = useTaskStats(tasks)
 const {
   isAddTaskModalOpen, isEditTaskModalOpen, currentTaskToEdit,
   openAddTaskModal, closeAddTaskModal, openEditTaskModal, closeEditTaskModal
 } = useTaskModals()
 
-// Sync initial state with URL query params on mount
+
+// Set initial search term from URL
 onMounted(() => {
-  // Set initial values from URL
+  if (querySearch.value) {
+    setSearchTerm(querySearch.value)
+  }
+    // Set initial values from URL
   if (queryPage.value > 1) setPage(queryPage.value)
   if (queryFilter.value !== 'all') setActiveFilter(queryFilter.value)
   if (querySort.value !== 'date-asc') setSortOrder(querySort.value)
   if (queryPerPage.value !== 5) setItemsPerPage(queryPerPage.value)
-
-  // Use the helper function for the initial fetch
   fetchTasks(createTaskParams());
+
 })
 
 // Helper function to map filters to API status
@@ -162,6 +159,7 @@ watch(sortOrder, (newSort) => {
 
 watch(itemsPerPage, (newPerPage) => {
   updatePerPage(newPerPage)
+  itemsPerPage.value = newPerPage;
   fetchTasks(createTaskParams({ per_page: newPerPage, page: 1 }));
 })
 

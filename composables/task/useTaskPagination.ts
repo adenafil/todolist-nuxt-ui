@@ -1,4 +1,3 @@
-// composables/task/useTaskPagination.ts
 import { ref, computed, watch, nextTick, onMounted } from "vue";
 import { useNuxtApp } from "#app";
 import type { Task } from "~/types/task";
@@ -6,8 +5,8 @@ import type { Task } from "~/types/task";
 export function useTaskPagination(filteredTasks: Ref<Task[]>) {
   const { $isHydrating } = useNuxtApp();
   const isHydrating = ref(true);
-  const currentPage = ref(1);
-  const itemsPerPage = ref(5);
+  const currentPage = useState("currentPage", () => 1);
+  const itemsPerPage = useState("itemsPerPage", () => 5);
 
   // Combine both hydration flags for extra safety
   const isCurrentlyHydrating = computed(() => {
@@ -22,7 +21,7 @@ export function useTaskPagination(filteredTasks: Ref<Task[]>) {
 
       console.log("Filtered tasks changed, checking pagination");
       // If we're not on the first page and there are no items on the current page
-      // (due to deletion or filtering), reset to page 1
+      // (due to deletion or filtering), reset to page 1      
       if (filteredTasks.value.length > 0 && (currentPage.value - 1) * itemsPerPage.value >= filteredTasks.value.length) {
         console.log("Resetting to page 1 due to filter change");
         currentPage.value = 1;

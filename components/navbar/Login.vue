@@ -103,7 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <header class="flex items-center justify-around p-4 bg-white dark:bg-gray-800 shadow-sm">
+    <header class="flex items-center justify-between lg:px-20 p-4 bg-white dark:bg-gray-800 shadow-sm">
         <!-- Logo & Brand -->
         <div class="flex items-center cursor-pointer" @click="navigateTo('/dashboard')">
             <UIcon name="i-mdi:task-auto" class="text-primary text-4xl mr-2" />

@@ -31,7 +31,7 @@ export function useRouteQuery() {
     const newQuery = {
       ...route.query,
       ...params,
-    };
+    };    
 
     // Remove undefined or null values
     Object.keys(newQuery).forEach((key) => {
