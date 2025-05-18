@@ -129,7 +129,11 @@ onMounted(() => {
             </UForm>
 
             <!-- User Menu -->
-            <UDropdownMenu :items="dropdownItems" :popper="{ placement: 'bottom-end' }">
+            <UDropdownMenu :items="dropdownItems" :content="{
+                align: 'center',
+                side: 'top'
+
+            }" :popper="{ placement: 'bottom-end' }">
                 <UAvatar :src="user.avatar" :alt="user.name" size="xl" class="cursor-pointer" />
 
                 <!-- Informasi profil di dalam dropdown -->
