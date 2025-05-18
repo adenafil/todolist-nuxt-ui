@@ -9,7 +9,7 @@ useSeoMeta({
   description: 'Login, Register, or Reset your password.',
   ogDescription: 'Login, Register, or Reset your password.',
   author: "Ade Nafil Firmansah",
-  keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky",
+  keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky, taskify, taskify-pppl",
 })
 
 const {
@@ -19,13 +19,25 @@ const {
   onLoginSubmit, onRegisterSubmit, onForgotPasswordSubmit
 } = useAuth();
 
+const { showErrorToast } = useNotifications();
 
+
+const route = useRoute();
+const router = useRouter();
+
+onMounted(() => {
+  if (route.query.error) {
+    const message = route.query.error as string;
+    showErrorToast(message);
+
+    const { error, ...newQuery } = route.query;
+    router.replace({ query: newQuery });
+  }
+});
 
 const handleNavigate = (type: any) => {
   formType.value = type
 }
-
-
 
 </script>
 

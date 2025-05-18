@@ -6,7 +6,7 @@ useSeoMeta({
     description: 'An error occurred during the authentication process',
     ogDescription: 'An error occurred during the authentication process',
     author: 'Ade Nafil Firmansah',
-    keywords: 'task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky',
+    keywords: 'task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky, taskify, taskify-pppl',
 })
 
 const route = useRoute();

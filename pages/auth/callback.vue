@@ -6,7 +6,7 @@ useSeoMeta({
     description: 'Completing your authentication process',
     ogDescription: 'Completing your authentication process',
     author: 'Ade Nafil Firmansah',
-    keywords: 'task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky',
+    keywords: 'task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky, taskify, taskify-pppl',
 })
 
 // Define meta to disable navigation during authentication

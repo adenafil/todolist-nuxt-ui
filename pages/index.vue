@@ -5,7 +5,7 @@ useSeoMeta({
     description: 'Streamline your productivity with our intuitive task management application. Organize, prioritize, and complete your tasks efficiently.',
     ogDescription: 'Streamline your productivity with our intuitive task management application. Organize, prioritize, and complete your tasks efficiently.',
     author: "Ade Nafil Firmansah",
-    keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky",
+    keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky, taskify, taskify-pppl",
 })
 </script>
 
