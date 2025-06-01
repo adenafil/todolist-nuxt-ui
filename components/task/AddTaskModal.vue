@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { z } from 'zod'
+import { object, z } from 'zod'
+import { useTasks } from '~/composables/task/useTasks'
+import { useTaskCategories } from '~/composables/task/useTaskCategories'
 
 const props = defineProps({
     isOpen: {
@@ -13,7 +15,7 @@ const props = defineProps({
     taskToEdit: {
         type: Object,
         default: null
-    }
+    },
 })
 
 const emit = defineEmits(['close', 'add-task', 'update-task'])
@@ -28,10 +30,12 @@ const taskSchema = z.object({
     due_date: z.string().min(1, 'Due date is required')
 })
 
-// Tambahkan description field ke objek task
+// Tambahkan di bagian reactive data
 const newTask = reactive({
     title: '',
-    description: '', // Tambahkan field deskripsi
+    description: '',
+    category: '',
+    categoryIcon: 'i-heroicons-tag',
     priority: 'medium',
     due_date: new Date().toISOString().slice(0, 10),
     completed: 'in_progress'
@@ -43,6 +47,50 @@ const priorityItems = [
     { label: 'Medium Priority', value: 'medium', color: 'yellow' },
     { label: 'Low Priority', value: 'low', color: 'green' }
 ]
+
+// Tambahkan state untuk suggestions dan icon options
+const showSuggestions = ref(false)
+const showIconOptions = ref(false)
+
+// Gunakan composable untuk kategori
+const { categories: categorySuggestions, isLoading: isLoadingCategories, fetchCategories } = useTaskCategories()
+
+// Icon options - updated to match all icons from useTaskCategories
+const iconOptions = [
+    { value: 'i-heroicons-home' },
+    { value: 'i-heroicons-briefcase' },
+    { value: 'i-heroicons-user' },
+    { value: 'i-heroicons-academic-cap' },
+    { value: 'i-heroicons-heart' },
+    { value: 'i-heroicons-shopping-cart' },
+    { value: 'i-heroicons-globe-alt' },
+    { value: 'i-heroicons-currency-dollar' },
+    { value: 'i-heroicons-film' },
+    { value: 'i-heroicons-fire' },
+    { value: 'i-heroicons-users' },
+    { value: 'i-heroicons-trophy' },
+    { value: 'i-heroicons-cake' },
+    { value: 'i-heroicons-book-open' },
+    { value: 'i-heroicons-computer-desktop' },
+    { value: 'i-heroicons-paint-brush' },
+    { value: 'i-heroicons-chat-bubble-left-right' },
+    { value: 'i-heroicons-scissors' },
+    { value: 'i-heroicons-truck' },
+    { value: 'i-heroicons-exclamation-triangle' },
+    { value: 'i-heroicons-puzzle-piece' },
+    { value: 'i-heroicons-calendar-days' },
+    { value: 'i-heroicons-tag' }
+]
+
+
+
+onMounted(() => {
+    // Fetch categories saat component dimount
+    fetchCategories()
+});
+
+// Computed untuk selected icon
+const selectedIcon = computed(() => newTask.categoryIcon || 'i-heroicons-tag')
 
 // Computed property untuk menangani konversi object/string
 const selectedPriority = computed({
@@ -56,13 +104,23 @@ const selectedPriority = computed({
     }
 });
 
+// Computed untuk filtered suggestions
+const filteredSuggestions = computed(() => {
+    if (!newTask.category) return categorySuggestions.value
+    return categorySuggestions.value.filter(suggestion =>
+        suggestion.name.toLowerCase().includes(newTask.category.toLowerCase())
+    )
+})
+
 // Jika dalam mode edit, isi form dengan data task yang akan diedit
 watch(() => props.taskToEdit, (newVal) => {
     console.log(newVal);
-    
+
     if (newVal && props.editMode) {
         newTask.title = newVal.title || '';
         newTask.description = newVal.description || '';
+        newTask.category = newVal.category || '';
+        newTask.categoryIcon = newVal.categoryIcon || 'i-heroicons-tag';
         newTask.priority = newVal.priority || 'medium';
         newTask.due_date = newVal.dueDate || new Date().toISOString().slice(0, 10);
         newTask.completed = newVal.completed || false;
@@ -77,11 +135,13 @@ watch(() => props.isOpen, (isOpen) => {
 });
 
 const resetForm = () => {
-    newTask.title = '';
-    newTask.description = '';
-    newTask.priority = 'medium';
-    newTask.due_date = new Date().toISOString().slice(0, 10);
-    newTask.completed = '';
+    newTask.title = ''
+    newTask.description = ''
+    newTask.category = ''
+    newTask.categoryIcon = 'i-heroicons-tag'
+    newTask.priority = 'medium'
+    newTask.due_date = new Date().toISOString().slice(0, 10)
+    newTask.completed = ''
 }
 
 const handleSubmit = () => {
@@ -91,14 +151,18 @@ const handleSubmit = () => {
             ...props.taskToEdit,
             title: newTask.title,
             description: newTask.description,
+            category: newTask.category,
+            categoryIcon: newTask.categoryIcon,
             priority: newTask.priority,
             due_date: newTask.due_date
         };
+        console.log("Updated Task:", updatedTask);
+
         emit('update-task', updatedTask);
     } else {
         // Mode tambah - buat task baru
         console.log(newTask);
-        
+
         emit('add-task', newTask);
     }
 
@@ -106,15 +170,49 @@ const handleSubmit = () => {
     resetForm();
     emit('close');
 }
+
+// Methods
+const onCategoryInput = () => {
+    showSuggestions.value = true
+}
+
+const hideSuggestions = () => {
+    setTimeout(() => {
+        showSuggestions.value = false
+    }, 200)
+}
+
+const selectSuggestion = (suggestion) => {
+    newTask.category = suggestion.name
+    newTask.categoryIcon = suggestion.icon
+    showSuggestions.value = false
+}
+
+const toggleIconOptions = () => {
+    showIconOptions.value = !showIconOptions.value
+}
+
+const selectIcon = (iconValue) => {
+    newTask.categoryIcon = iconValue
+    showIconOptions.value = false
+}
+
+// Close icon options when clicking outside
+onMounted(() => {
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.relative')) {
+            console.log("hidup jokowiii");
+            showIconOptions.value = false
+        }
+    })
+})
+
 </script>
 
 <template>
     <UModal :title="editMode ? 'Edit Task' : 'Add New Task'"
         :description="editMode ? 'Update task details' : 'Create a new task with title, priority, and due date'"
-        :open="isOpen"
-        :close="{ onClick: () => emit('close', false) }"
-
-        >
+        :open="isOpen" :close="{ onClick: () => emit('close', false) }">
         <template #body class="p-6">
             <UForm :schema="taskSchema" :state="newTask" class="space-y-5" @submit="handleSubmit">
                 <!-- Task Title Field -->
@@ -129,6 +227,51 @@ const handleSubmit = () => {
                         class="w-full" :ui="{
                             base: 'min-h-[100px]'
                         }" />
+                </UFormField>
+
+
+                <!-- Category Field -->
+                <UFormField label="Category" name="category">
+                    <div class="flex space-x-2">
+                        <div class="flex-grow relative">
+                            <UInput v-model="newTask.category" placeholder="e.g., Work, Personal" size="lg"
+                                class="w-full" @input="onCategoryInput" @focus="showSuggestions = true"
+                                @blur="hideSuggestions" />
+                            <!-- Category Suggestions -->
+                            <div v-if="showSuggestions && filteredSuggestions.length > 0"
+                                class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                                <div v-for="suggestion in filteredSuggestions" :key="suggestion.name"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                                    @mousedown.prevent="selectSuggestion(suggestion)">
+                                    <UIcon :name="suggestion.icon" class="mr-2 text-gray-600 dark:text-gray-400" />
+                                    <span class="text-gray-900 dark:text-white">{{ suggestion.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-shrink-0 relative">
+                            <!-- Icon Display Button -->
+                            <button type="button"
+                                class="w-12 h-10 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 bg-white dark:bg-gray-800"
+                                @click="toggleIconOptions">
+                                <UIcon :name="selectedIcon" class="text-lg text-gray-600 dark:text-gray-400" />
+                            </button>
+
+                            <!-- Icon Options Dropdown -->
+                            <div v-if="showIconOptions"
+                                class="absolute z-20 top-full mt-1 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2 grid grid-cols-4 gap-1 w-32">
+                                <button v-for="icon in iconOptions" :key="icon.value" type="button"
+                                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                                    :class="{
+                                        'bg-primary-100 dark:bg-primary-800': selectedIcon === icon.value,
+                                        'text-primary-600 dark:text-primary-400': selectedIcon === icon.value,
+                                        'text-gray-600 dark:text-gray-400': selectedIcon !== icon.value
+                                    }" @click="selectIcon(icon.value)">
+                                    <UIcon :name="icon.value" class="text-sm" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </UFormField>
 
                 <!-- Priority Field - menggunakan USelect -->

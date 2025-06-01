@@ -1,18 +1,20 @@
 // composables/task/useTasks.ts
 import { ref, onMounted } from "vue";
 import type { Task } from "~/types/task";
+import { useTaskCategories } from "./useTaskCategories";
 
 export function useTasks() {
   const { $api, $clearApiCache } = useNuxtApp();
   const { token } = useToken();
   const { showSuccessToast, showErrorToast } = useNotifications();
   const route = useRoute();
+  const { fetchCategories, categories } = useTaskCategories();
 
   const tasks = useState<Task[]>("tasks", () => []);
   const isLoading = useState("isLoading", () => true);
   const totalPages = ref(1);
   const currentPage = ref(1);
-  const totalTasks = useState('totalTasks', () => 0);
+  const totalTasks = useState("totalTasks", () => 0);
 
   // Fetch tasks with filters
   const fetchTasks = async (params = {}) => {
@@ -36,6 +38,8 @@ export function useTasks() {
         tasks.value = response.data.map((item) => ({
           id: item.id,
           title: item.title,
+          category: item.category || "",
+          categoryIcon: item.categoryIcon || "",
           description: item.description || "",
           priority: item.priority,
           status: item.status,
@@ -60,7 +64,9 @@ export function useTasks() {
 
   // Task CRUD operations
   const addTask = async (newTask: Task) => {
-    isLoading.value = true; // Show loading state when adding a task
+    isLoading.value = true;
+    console.log("Adding task:", newTask);
+
     try {
       const response = await $api("/api/tasks", {
         method: "POST",
@@ -74,7 +80,9 @@ export function useTasks() {
         showSuccessToast("Task added successfully");
         // Explicitly clear cache after mutation
         $clearApiCache(/\/api\/tasks/);
+        $clearApiCache(/\/api\/task\/categories/);
         await fetchTasks(); // Refresh tasks
+        await fetchCategories(); // Refresh categories
       } else {
         showErrorToast(response.message || "Failed to add task");
       }
@@ -102,6 +110,8 @@ export function useTasks() {
         // Explicitly clear cache after mutation
         $clearApiCache(/\/api\/tasks/);
         fetchTasks();
+        await fetchTasks(); // Refresh tasks
+        await fetchCategories(); // Refresh categories
       } else {
         showErrorToast("Failed to delete task");
       }
@@ -114,8 +124,10 @@ export function useTasks() {
   const toggleTaskComplete = async (taskId: number) => {
     try {
       const task = tasks.value.find((t) => t.id === taskId);
-      
+
       if (!task) return;
+
+      task.completed = !task.completed;
 
       const newStatus = task.completed ? "in_progress" : "completed";
 
@@ -131,7 +143,6 @@ export function useTasks() {
 
       if (response.status === "success") {
         // Update local state
-        task.completed = !task.completed;
         task.status = newStatus;
         showSuccessToast("Task status updated");
         // Explicitly clear cache after mutation
@@ -140,6 +151,8 @@ export function useTasks() {
         showErrorToast("Failed to update task status");
       }
     } catch (error) {
+      task.completed = !task.completed;
+
       console.error("Error updating task status:", error);
       showErrorToast("Failed to update task status");
     }
@@ -152,6 +165,8 @@ export function useTasks() {
         body: {
           title: updatedTask.title,
           description: updatedTask.description,
+          category: updatedTask.category,
+          categoryIcon: updatedTask.categoryIcon,
           priority: updatedTask.priority,
           due_date: updatedTask.dueDate,
         },
@@ -169,6 +184,9 @@ export function useTasks() {
         showSuccessToast("Task updated successfully");
         // Explicitly clear cache after mutation
         $clearApiCache(/\/api\/tasks/);
+        await fetchTasks(); // Refresh tasks
+        $clearApiCache(/\/api\/task\/categories/);
+        await fetchCategories(); // Refresh categories
       } else {
         showErrorToast("Failed to update task");
       }

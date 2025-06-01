@@ -5,6 +5,8 @@ export interface Task {
   id?: number;
   title: string;
   description?: string;
+  category?: string;
+  categoryIcon?: string;
   status: TaskStatus;
   priority: TaskPriority;
   dueDate: string; // This will map to due_date from API
