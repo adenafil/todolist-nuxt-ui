@@ -68,7 +68,7 @@ onMounted(() => {
   if (querySearch.value) {
     setSearchTerm(querySearch.value)
   }
-    // Set initial values from URL
+  // Set initial values from URL
   if (queryPage.value > 1) setPage(queryPage.value)
   if (queryFilter.value !== 'all') setActiveFilter(queryFilter.value)
   if (querySort.value !== 'date-asc') setSortOrder(querySort.value)
@@ -225,33 +225,49 @@ const handleSetSortOrder = (order: string) => {
 
 
       <div v-if="isLoading" class="overflow-x-auto -mx-4 sm:-mx-0">
-        <div class="min-w-[800px] sm:min-w-full">
+        <div class="min-w-[900px] sm:min-w-full"> <!-- Increase min-width from 800px -->
           <!-- Table Header -->
           <div
             class="grid grid-cols-12 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 sticky left-0">
-            <div class="col-span-5 font-medium">Task</div>
+            <div class="col-span-4 font-medium">Task</div> <!-- Reduce from 5 to 4 -->
+            <div class="col-span-2 font-medium">Category</div> <!-- Add category column -->
             <div class="col-span-2 font-medium">Priority</div>
             <div class="col-span-2 font-medium">Due Date</div>
-            <div class="col-span-2 font-medium">Status</div>
+            <div class="col-span-1 font-medium">Status</div> <!-- Reduce from 2 to 1 -->
             <div class="col-span-1 font-medium text-right">Actions</div>
           </div>
 
           <!-- Skeleton Rows -->
           <div class="divide-y divide-gray-200 dark:divide-gray-700">
             <div v-for="i in itemsPerPage" :key="`skeleton-${i}`" class="grid grid-cols-12 gap-4 p-4 items-center">
-              <div class="col-span-5 flex items-center gap-2">
+              <!-- Task Column -->
+              <div class="col-span-4 flex items-center gap-2"> <!-- Reduce from 5 to 4 -->
                 <USkeleton class="h-4 w-4 rounded-md" />
                 <USkeleton class="h-5 w-48" />
               </div>
+
+              <!-- Category Column -->
+              <div class="col-span-2 flex items-center gap-1"> <!-- Add category skeleton -->
+                <USkeleton class="h-4 w-4 rounded-md" /> <!-- Icon skeleton -->
+                <USkeleton class="h-4 w-20" /> <!-- Category name skeleton -->
+              </div>
+
+              <!-- Priority Column -->
               <div class="col-span-2">
                 <USkeleton class="h-6 w-16 rounded-full" />
               </div>
+
+              <!-- Due Date Column -->
               <div class="col-span-2">
                 <USkeleton class="h-4 w-24" />
               </div>
-              <div class="col-span-2">
+
+              <!-- Status Column -->
+              <div class="col-span-1"> <!-- Reduce from 2 to 1 -->
                 <USkeleton class="h-6 w-20 rounded-full" />
               </div>
+
+              <!-- Actions Column -->
               <div class="col-span-1 flex justify-end gap-1">
                 <USkeleton class="h-8 w-8 rounded-md" />
                 <USkeleton class="h-8 w-8 rounded-md" />

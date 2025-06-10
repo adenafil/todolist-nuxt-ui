@@ -48,6 +48,18 @@ const { isLoading, exportTasks } = useTasks();
                     @update:model-value="updateItemsPerPage(Number($event === '' ? 0 : $event))" />
             </div>
 
+            <!-- <UButton 
+                class="cursor-pointer"
+                color="secondary" 
+                variant="soft"
+                icon="i-heroicons-arrow-down-tray" 
+                size="sm" 
+                :loading="isLoading"
+                @click="exportTasks"
+            >
+                Export Tasks
+            </UButton> -->
+
 
             <UButton class="cursor-pointer" color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">
                 Add Task
