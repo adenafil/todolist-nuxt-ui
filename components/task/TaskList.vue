@@ -31,16 +31,16 @@ const isTaskExpanded = (taskId) => {
 </script>
 
 <template>
-    <!-- Responsive container dengan scroll horizontal untuk mobile -->
     <div class="overflow-x-auto -mx-4 sm:-mx-0">
-        <div class="min-w-[800px] sm:min-w-full">
+        <div class="min-w-[900px] sm:min-w-full"> <!-- Increase min-width -->
             <!-- Table Header -->
             <div
                 class="grid grid-cols-12 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 sticky left-0">
-                <div class="col-span-5 font-medium">Task</div>
+                <div class="col-span-4 font-medium">Task</div> <!-- Reduce from 5 to 4 -->
+                <div class="col-span-2 font-medium">Category</div> <!-- Add category column -->
                 <div class="col-span-2 font-medium">Priority</div>
                 <div class="col-span-2 font-medium">Due Date</div>
-                <div class="col-span-2 font-medium">Status</div>
+                <div class="col-span-1 font-medium">Status</div>
                 <div class="col-span-1 font-medium text-right">Actions</div>
             </div>
 
@@ -51,7 +51,7 @@ const isTaskExpanded = (taskId) => {
                     <!-- Main Task Row -->
                     <div class="grid grid-cols-12 gap-4 p-4 items-center">
                         <!-- Task Title -->
-                        <div class="col-span-5 flex items-center gap-2">
+                        <div class="col-span-4 flex items-center gap-2"> <!-- Reduce from 5 to 4 -->
                             <UCheckbox :model-value="task.completed"
                                 @update:model-value="emit('toggle-complete', task.id)" />
                             <div>
@@ -59,11 +59,19 @@ const isTaskExpanded = (taskId) => {
                                     class="cursor-pointer hover:text-primary-500" @click="toggleExpandTask(task.id)">
                                     {{ task.title }}
                                 </span>
-                                <!-- Expand/collapse indicator -->
                                 <UIcon
                                     :name="isTaskExpanded(task.id) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
                                     class="inline-block ml-1 h-4 w-4 text-gray-400" v-if="task.description" />
                             </div>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-span-2"> <!-- Add category display -->
+                            <div v-if="task.category" class="flex items-center gap-1">
+                                <UIcon :name="task.categoryIcon || 'i-heroicons-tag'" class="h-4 w-4 text-gray-500" />
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{{ task.category }}</span>
+                            </div>
+                            <span v-else class="text-xs text-gray-400">No category</span>
                         </div>
 
                         <!-- Priority -->
@@ -79,7 +87,7 @@ const isTaskExpanded = (taskId) => {
                         </div>
 
                         <!-- Status -->
-                        <div class="col-span-2">
+                        <div class="col-span-1"> <!-- Reduce from 2 to 1 -->
                             <UBadge :color="getStatusColor(getTaskStatus(task))">
                                 {{ getStatusLabel(getTaskStatus(task)) }}
                             </UBadge>

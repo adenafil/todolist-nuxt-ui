@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useTasks } from '~/composables/task/useTasks'
+
 defineProps({
     filteredCount: {
         type: Number,
@@ -27,6 +29,8 @@ const updateItemsPerPage = (value: number) => {
 const openAddTaskModal = () => {
     emit('add-task')
 }
+
+const { isLoading, exportTasks } = useTasks();
 </script>
 
 <template>
@@ -43,7 +47,9 @@ const openAddTaskModal = () => {
                 <UInput :modelValue="itemsPerPage" type="number" :min="1" :max="50" size="sm" class="w-16"
                     @update:model-value="updateItemsPerPage(Number($event === '' ? 0 : $event))" />
             </div>
-            <UButton color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">
+
+
+            <UButton class="cursor-pointer" color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">
                 Add Task
             </UButton>
         </div>

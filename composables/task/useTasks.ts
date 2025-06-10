@@ -159,7 +159,7 @@ export function useTasks() {
   };
 
   const updateTask = async (updatedTask: Task) => {
-    console.log('Updating task:', updatedTask);
+    console.log("Updating task:", updatedTask);
 
     try {
       const response = await $api(`/api/tasks/${updatedTask.id}`, {
@@ -198,6 +198,47 @@ export function useTasks() {
     }
   };
 
+  // export task
+  const exportTasks = async () => {
+    isLoading.value = true;
+    try {
+      const response = await $api("/api/my-tasks/export", {
+        method: "get",
+        headers: {
+          Authorization: token.value,
+        },
+      });
+      isLoading.value = false;
+
+      // Create download link
+      const blob = new Blob([response], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+
+      // Generate filename with current date and filters
+      const date = new Date().toISOString().split("T")[0];
+      link.download = `my-tasks_${date}.xlsx`;
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      showSuccessToast("Tasks exported successfully!");
+    } catch (error) {
+      isLoading.value = false;
+      console.error("Error exporting tasks:", error);
+      showErrorToast("Failed to export tasks");
+    }
+  };
+
   return {
     tasks,
     isLoading,
@@ -209,5 +250,6 @@ export function useTasks() {
     deleteTask,
     toggleTaskComplete,
     updateTask,
+    exportTasks,
   };
 }
