@@ -13,7 +13,6 @@ useSeoMeta({
   ogDescription: 'Manage your profile settings and preferences.',
   author: "Ade Nafil Firmansah",
   keywords: "task management, productivity, task tracker, to-do list, task organization, Ade Nafil Firmansah, Husni Mubarok, Achmad Wildan Muzaky, taskify, taskify-pppl",
-
 })
 
 const { user } = useUser()
@@ -41,6 +40,7 @@ watch(searchTerm, (newSearchTerm) => {
       <div class="md:col-span-2">
         <ProfilePersonalInfoForm v-if="activeTab === 'personal'" />
         <ProfilePasswordChangeForm v-if="activeTab === 'password'" />
+        <ProfileNotificationSettings v-if="activeTab === 'notifications'" />
 
         <template v-if="activeTab === 'security'">
           <ProfileSecurityLog />

@@ -9,7 +9,7 @@ export interface Task {
   categoryIcon?: string;
   status: TaskStatus;
   priority: TaskPriority;
-  dueDate: string; // This will map to due_date from API
+  due_date: string; // This will map to due_date from API
   completed: boolean; // Derived from status
   user_id?: number;
   created_at?: string;

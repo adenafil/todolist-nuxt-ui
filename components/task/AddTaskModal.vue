@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { object, z } from 'zod'
-import { useTasks } from '~/composables/task/useTasks'
 import { useTaskCategories } from '~/composables/task/useTaskCategories'
 
 const props = defineProps({

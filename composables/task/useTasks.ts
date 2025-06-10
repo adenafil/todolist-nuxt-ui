@@ -159,6 +159,8 @@ export function useTasks() {
   };
 
   const updateTask = async (updatedTask: Task) => {
+    console.log('Updating task:', updatedTask);
+
     try {
       const response = await $api(`/api/tasks/${updatedTask.id}`, {
         method: "PATCH",
@@ -168,7 +170,7 @@ export function useTasks() {
           category: updatedTask.category,
           categoryIcon: updatedTask.categoryIcon,
           priority: updatedTask.priority,
-          due_date: updatedTask.dueDate,
+          due_date: updatedTask.due_date,
         },
         headers: {
           Authorization: token.value,
