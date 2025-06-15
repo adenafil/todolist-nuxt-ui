@@ -10,7 +10,7 @@ export function isDateExpired(dateString: string): boolean {
 
 export function formatDate(dateString: string, options?: Intl.DateTimeFormatOptions): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString(undefined, options);
+  return date.toLocaleDateString('id-ID', options);
 }
 
 export function getRelativeTimeFromNow(dateString: string): string {

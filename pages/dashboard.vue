@@ -289,7 +289,7 @@ const handleSetSortOrder = (order: string) => {
 
       <!-- Pagination -->
       <div class="py-4 flex justify-center">
-        <template v-if="isLoading || tasks.length === 0">
+        <template v-if="isLoading ">
           <USkeleton class="h-8 w-48 rounded-md" />
         </template>
         <template v-else>

@@ -30,7 +30,7 @@ const openAddTaskModal = () => {
     emit('add-task')
 }
 
-const { isLoading, exportTasks } = useTasks();
+const { isLoading, exportTasks, totalTasks } = useTasks();
 </script>
 
 <template>
@@ -48,17 +48,18 @@ const { isLoading, exportTasks } = useTasks();
                     @update:model-value="updateItemsPerPage(Number($event === '' ? 0 : $event))" />
             </div>
 
-            <!-- <UButton 
+            <UButton 
                 class="cursor-pointer"
                 color="secondary" 
                 variant="soft"
                 icon="i-heroicons-arrow-down-tray" 
                 size="sm" 
                 :loading="isLoading"
+                :disabled ="isLoading || totalTasks === 0"
                 @click="exportTasks"
             >
                 Export Tasks
-            </UButton> -->
+            </UButton>
 
 
             <UButton class="cursor-pointer" color="primary" icon="i-heroicons-plus" size="sm" @click="openAddTaskModal">

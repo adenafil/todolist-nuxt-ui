@@ -127,9 +127,12 @@ export function useTasks() {
 
       if (!task) return;
 
-      task.completed = !task.completed;
 
       const newStatus = task.completed ? "in_progress" : "completed";
+      task.completed = !task.completed;
+
+      console.log("Updating task status:", taskId, "to", newStatus);
+      
 
       const response = await $api(`/api/tasks/${taskId}`, {
         method: "PATCH",
