@@ -24,7 +24,7 @@ const emit = defineEmits(['close', 'add-task', 'update-task'])
 const taskSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters').max(50, 'Title must not exceed 50 characters'),
     description: z.string().optional(),
-    category: z.string().min(3, 'Category is required').max(10, 'Category must not exceed 50 characters'),
+    category: z.string().min(3, 'Category is required').max(50, 'Category must not exceed 50 characters'),
     priority: z.string({
         required_error: 'Please select a priority'
     }),
