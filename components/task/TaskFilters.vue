@@ -88,8 +88,6 @@ const priorityOptions = [
     }
 ]
 
-// PERBAIKAN: Membuat array items untuk UDropdownMenu
-// PERBAIKAN: Menambahkan safe check untuk taskCounts
 const dropdownItems = computed(() => {
     return priorityOptions.map(option => ({
         label: option.label,
