@@ -39,7 +39,7 @@ const handleSearch = (searchTerm) => {
             <div
                 class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                 <div>
-                    <p>© 2025 TaskManager. All rights reserved.</p>
+                    <p>© 2025 Taskify. All rights reserved.</p>
                 </div>
                 <div class="flex space-x-4 mt-3 md:mt-0">
                     <UButton icon="i-heroicons-moon" v-if="!isDarkMode" color="secondary" variant="ghost" size="xs"

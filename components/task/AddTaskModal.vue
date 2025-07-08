@@ -22,7 +22,7 @@ const emit = defineEmits(['close', 'add-task', 'update-task'])
 
 // Tambahkan description ke skema validasi
 const taskSchema = z.object({
-    title: z.string().min(3, 'Title must be at least 3 characters').max(50, 'Title must not exceed 50 characters'),
+    title: z.string().min(3, 'Title must be at least 3 characters').max(300, 'Title must not exceed 300 characters'),
     description: z.string().optional(),
     category: z.string().min(3, 'Category is required').max(50, 'Category must not exceed 50 characters'),
     priority: z.string({
